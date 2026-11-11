@@ -1,204 +1,211 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="light" data-theme-pref="system">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DAV Assistant – Trợ lý AI về Học viện Ngoại giao</title>
 <meta name="description" content="Trợ lý AI hỏi đáp song ngữ về Học viện Ngoại giao: tuyển sinh, ngành học, học phí, học bổng, đời sống sinh viên. Bản thử nghiệm của CLB AI & Công nghệ (DAItech).">
 <meta property="og:title" content="DAV Assistant – Hỏi gì về Học viện Ngoại giao cũng được">
 <meta property="og:description" content="Trợ lý AI song ngữ Việt – Anh về tuyển sinh, ngành học, học phí, học bổng và đời sống sinh viên DAV.">
-<meta name="theme-color" content="#0B3D91">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B3D91'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='24' fill='white' text-anchor='middle'%3EDAV%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0A2A66">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" href="assets/img/dav-logo.png">
+<link rel="apple-touch-icon" href="assets/img/dav-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --navy: #0B3D91;
-    --navy-deep: #072A66;
-    --ink: #10203D;
-    --muted: #5A6B85;
-    --bg: #F4F7FC;
-    --card: #FFFFFF;
-    --line: #DDE5F2;
-    --chip: #E8EFFB;
-    --gold: #C9A227;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ink: #E6ECF7;
-      --muted: #9AA9C2;
-      --bg: #0A1222;
-      --card: #111C33;
-      --line: #22304D;
-      --chip: #17264A;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: inherit; }
+<link rel="preconnect" href="https://console-agents.fpt.ai" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  .topbar {
-    background: linear-gradient(120deg, var(--navy-deep), var(--navy));
-    color: #fff;
-  }
-  .topbar-inner {
-    max-width: 1180px; margin: 0 auto; padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .mark {
-    width: 40px; height: 40px; border-radius: 10px; flex: none;
-    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25);
-    display: grid; place-items: center; font-weight: 700; font-size: 13px; letter-spacing: .5px;
-  }
-  .brand { font-weight: 700; font-size: 17px; line-height: 1.2; }
-  .brand small { display: block; font-weight: 400; font-size: 12.5px; opacity: .8; }
-  .lang { margin-left: auto; font-size: 12.5px; opacity: .85; white-space: nowrap; }
+<!-- Apply language + theme before first paint to avoid any flash. -->
+<script>
+  (function () {
+    try {
+      var root = document.documentElement;
+      var lang = localStorage.getItem('dav-lang');
+      if (lang !== 'vi' && lang !== 'en') {
+        lang = (navigator.language || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'vi';
+      }
+      var pref = localStorage.getItem('dav-theme');
+      if (pref !== 'light' && pref !== 'dark' && pref !== 'system') pref = 'system';
+      var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      root.lang = lang;
+      root.dataset.theme = dark ? 'dark' : 'light';
+      root.dataset.themePref = pref;
+    } catch (e) {}
+  })();
+</script>
 
-  .wrap {
-    max-width: 1180px; margin: 0 auto; padding: 24px 20px 40px;
-    display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 24px; align-items: start;
-  }
-
-  .intro h1 {
-    font-size: clamp(26px, 3.2vw, 36px); line-height: 1.18; margin: 4px 0 12px; letter-spacing: -.01em;
-  }
-  .intro h1 em { font-style: normal; color: var(--navy); }
-  @media (prefers-color-scheme: dark) { .intro h1 em { color: #8DB2FF; } }
-  .lede { color: var(--muted); margin: 0 0 6px; }
-  .lede-en { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
-
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 16px;
-  }
-  .card + .card { margin-top: 14px; }
-  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
-
-  .topics { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .topics li {
-    background: var(--chip); border-radius: 999px; padding: 6px 12px; font-size: 13.5px; font-weight: 500;
-  }
-  .examples { margin: 0; padding-left: 18px; font-size: 14.5px; }
-  .examples li + li { margin-top: 4px; }
-
-  .qr { display: flex; gap: 14px; align-items: center; }
-  .qr img { width: 112px; height: 112px; background: #fff; border-radius: 10px; padding: 6px; border: 1px solid var(--line); flex: none; }
-  .qr p { margin: 0; font-size: 14px; color: var(--muted); }
-  .qr strong { color: var(--ink); display: block; font-size: 15px; margin-bottom: 2px; }
-
-  .note { font-size: 12.5px; color: var(--muted); margin: 16px 2px 0; }
-  .note a { text-underline-offset: 2px; }
-
-  .chat {
-    background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
-    box-shadow: 0 18px 50px -24px rgba(11, 61, 145, .35);
-    position: sticky; top: 16px;
-    height: min(780px, calc(100vh - 32px)); min-height: 520px;
-    display: flex; flex-direction: column;
-  }
-  .chat iframe { flex: 1; width: 100%; border: 0; display: block; background: var(--card); }
-  .chat-fallback {
-    display: none; padding: 28px; text-align: center; color: var(--muted);
-  }
-  .btn {
-    display: inline-block; background: var(--navy); color: #fff; text-decoration: none;
-    padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 15px; margin-top: 10px;
-  }
-  .open-full { font-size: 12.5px; text-align: center; padding: 8px; border-top: 1px solid var(--line); color: var(--muted); }
-  .open-full a { color: var(--navy); font-weight: 600; text-decoration: none; }
-  @media (prefers-color-scheme: dark) { .open-full a { color: #8DB2FF; } }
-
-  footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 28px; font-size: 12.5px; color: var(--muted); }
-
-  @media (max-width: 880px) {
-    .wrap { grid-template-columns: 1fr; padding-top: 16px; gap: 18px; }
-    .chat { position: relative; top: 0; height: 78vh; min-height: 480px; order: -1; }
-    .intro h1 { font-size: 24px; }
-    .qr-card { display: none; }
-    .lang { display: none; }
-  }
-</style>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="mark" aria-hidden="true">DAV</div>
-      <div class="brand">DAV Assistant<small>Trợ lý AI về Học viện Ngoại giao</small></div>
-      <div class="lang">Tiếng Việt · English</div>
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+      <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+      <symbol id="i-collapse" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main" data-i18n="skip">Bỏ qua đến nội dung chính</a>
+
+  <!-- Decorative background: soft orbs + faint globe meridians -->
+  <div class="bg-deco" aria-hidden="true">
+    <span class="orb orb-blue"></span>
+    <span class="orb orb-red"></span>
+    <svg class="globe-lines" viewBox="-110 -110 220 220" fill="none" stroke="currentColor" stroke-width="0.6">
+      <circle r="100"/>
+      <ellipse rx="70" ry="100"/><ellipse rx="40" ry="100"/><ellipse rx="14" ry="100"/>
+      <ellipse rx="100" ry="70"/><ellipse rx="100" ry="40"/><ellipse rx="100" ry="14"/>
+      <path d="M-100 0H100M0 -100V100"/>
+    </svg>
+  </div>
+
+  <header class="site-header">
+    <div class="header-glass">
+      <div class="header-inner">
+        <a class="brand" href="./" aria-label="DAV Assistant">
+          <span class="brand-logo"><img src="assets/img/dav-logo.png" alt="" width="44" height="44"></span>
+          <span class="brand-text">
+            <strong>DAV Assistant</strong>
+            <small data-i18n="brandSub">Trợ lý AI về Học viện Ngoại giao</small>
+          </span>
+        </a>
+
+        <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="header-controls" data-i18n-attr="aria-label:menu">
+          <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+
+        <div class="header-controls" id="header-controls">
+          <a class="official-link" href="https://www.dav.edu.vn" target="_blank" rel="noopener" data-i18n-attr="title:officialTitle">
+            <span data-i18n="official">Trang chính thức</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
+          </a>
+
+          <div class="seg seg-lang" role="group" data-i18n-attr="aria-label:langGroup" style="--n:2;--i:0">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <button type="button" class="seg-btn" data-lang="vi" lang="vi" aria-pressed="true">VI</button>
+            <button type="button" class="seg-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+          </div>
+
+          <div class="seg seg-theme" role="group" data-i18n-attr="aria-label:themeGroup" style="--n:3;--i:2">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <button type="button" class="seg-btn seg-icon" data-theme-pref="light" aria-pressed="false" data-i18n-attr="aria-label:themeLight;title:themeLight">
+              <svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg>
+            </button>
+            <button type="button" class="seg-btn seg-icon" data-theme-pref="dark" aria-pressed="false" data-i18n-attr="aria-label:themeDark;title:themeDark">
+              <svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg>
+            </button>
+            <button type="button" class="seg-btn seg-icon" data-theme-pref="system" aria-pressed="true" data-i18n-attr="aria-label:themeSystem;title:themeSystem">
+              <svg class="icon" aria-hidden="true"><use href="#i-monitor"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" id="main">
     <section class="intro">
-      <h1>Hỏi gì về <em>Học viện Ngoại giao</em> cũng được.</h1>
-      <p class="lede">Tuyển sinh, điểm chuẩn, học phí, học bổng, ký túc xá, CLB và sự kiện – trợ lý trả lời ngay, kèm nguồn chính thức.</p>
-      <p class="lede-en">Ask anything about the Diplomatic Academy of Vietnam – in Vietnamese or English.</p>
+      <h1 class="hero-title reveal" style="--d:0" data-i18n-html="heroHtml">Hỏi gì về <em>Học viện Ngoại giao</em> cũng được.</h1>
+      <p class="lede reveal" style="--d:1" data-i18n="lede">Tuyển sinh, điểm chuẩn, học phí, học bổng, ký túc xá, CLB và sự kiện – trợ lý trả lời ngay, kèm nguồn chính thức.</p>
+      <p class="lede-sub reveal" style="--d:2" data-i18n="ledeSub">Ask anything about the Diplomatic Academy of Vietnam – in Vietnamese or English.</p>
 
-      <div class="card">
-        <h2>Chủ đề / Topics</h2>
-        <ul class="topics">
-          <li>Tuyển sinh 2026</li><li>Điểm chuẩn</li><li>Học phí</li><li>Ngành học</li>
-          <li>Chương trình tiếng Anh</li><li>Liên kết quốc tế</li><li>Học bổng</li><li>Ký túc xá</li>
-          <li>CLB · Đoàn · Hội</li><li>Tin tức</li>
-        </ul>
+      <div class="card reveal" style="--d:3">
+        <h2 id="topics-title" data-i18n="topicsTitle">Chủ đề / Topics</h2>
+        <ul class="topics" id="topics" role="list" aria-labelledby="topics-title"></ul>
       </div>
 
-      <div class="card">
-        <h2>Thử hỏi / Try asking</h2>
-        <ol class="examples">
-          <li>Ngành Truyền thông quốc tế lấy bao nhiêu điểm năm 2026?</li>
-          <li>Học bổng Chắp cánh tương lai dành cho ai?</li>
-          <li>DAV có chương trình liên kết với trường nào?</li>
-          <li>How much is tuition for the English-taught programmes?</li>
-        </ol>
+      <div class="card reveal" style="--d:4">
+        <h2 id="ask-title" data-i18n="askTitle">Thử hỏi / Try asking</h2>
+        <ol class="questions" id="questions" aria-labelledby="ask-title"></ol>
+        <p class="card-hint" data-i18n="askHint">Nhấn vào câu hỏi để sao chép, rồi dán vào khung chat.</p>
       </div>
 
-      <div class="card qr-card">
+      <div class="card qr-card reveal" style="--d:5">
         <div class="qr">
-          <img src="qr.svg" alt="Mã QR mở DAV Assistant trên điện thoại">
-          <p><strong>Dùng trên điện thoại</strong>Quét mã để mở trợ lý. Scan to chat on your phone.</p>
+          <img src="qr.svg" width="112" height="112" alt="Mã QR mở DAV Assistant trên điện thoại" data-i18n-attr="alt:qrAlt">
+          <p><strong data-i18n="qrTitle">Dùng trên điện thoại</strong><span data-i18n="qrText">Quét mã để mở trợ lý. Scan to chat on your phone.</span></p>
         </div>
       </div>
 
-      <p class="note">Đây là bản thử nghiệm do CLB AI &amp; Công nghệ (DAItech) xây dựng trên FPT AI Factory từ thông tin công khai của Học viện, <strong>không phải kênh thông tin chính thức</strong>. Câu trả lời có thể chưa chính xác – vui lòng đối chiếu tại <a href="https://www.dav.edu.vn" target="_blank" rel="noopener">dav.edu.vn</a> hoặc hotline tuyển sinh 0943.482.840 / 0936.018.433. Đừng gửi thông tin cá nhân trong cuộc trò chuyện.</p>
+      <p class="note reveal" style="--d:6" data-i18n-html="noteHtml">Đây là bản thử nghiệm do CLB AI &amp; Công nghệ (DAItech) xây dựng trên FPT AI Factory từ thông tin công khai của Học viện, <strong>không phải kênh thông tin chính thức</strong>. Câu trả lời có thể chưa chính xác – vui lòng đối chiếu tại <a href="https://www.dav.edu.vn" target="_blank" rel="noopener">dav.edu.vn</a> hoặc hotline tuyển sinh 0943.482.840 / 0936.018.433. Đừng gửi thông tin cá nhân trong cuộc trò chuyện.</p>
     </section>
 
-    <section class="chat" aria-label="Khung chat DAV Assistant">
-      <iframe id="chat"
-        src="https://console-agents.fpt.ai/chat-widget/?connectionKey=wgt__u-Owby-sZBPvCC0_5h-Gw&amp;locale=vi"
-        title="DAV Assistant chat"
-        allow="clipboard-write"
-        referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <div class="chat-fallback" id="fallback">
-        Không tải được khung chat trong trang này.<br>
-        <a class="btn" href="https://console-agents.fpt.ai/chat-widget/?connectionKey=wgt__u-Owby-sZBPvCC0_5h-Gw&amp;locale=vi" target="_blank" rel="noopener">Mở trợ lý / Open chat</a>
-      </div>
-      <div class="open-full">Khung chat bị nhỏ? <a href="https://console-agents.fpt.ai/chat-widget/?connectionKey=wgt__u-Owby-sZBPvCC0_5h-Gw&amp;locale=vi" target="_blank" rel="noopener">Mở toàn màn hình ↗</a></div>
-    </section>
+    <div class="chat-slot reveal" style="--d:2">
+      <section class="chat" id="chat-card" data-i18n-attr="aria-label:chatLabel"
+        aria-label="Khung chat DAV Assistant"
+        data-chat-url="https://console-agents.fpt.ai/chat-widget/?connectionKey=wgt__u-Owby-sZBPvCC0_5h-Gw&amp;locale=">
+        <div class="chat-bar">
+          <span class="status"><span class="status-dot" aria-hidden="true"></span><span data-i18n="chatStatus">Sẵn sàng hỗ trợ</span></span>
+          <div class="chat-actions">
+            <a class="icon-btn" id="chat-newtab" href="#" target="_blank" rel="noopener" data-i18n-attr="aria-label:chatNewTab;title:chatNewTab">
+              <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
+            </a>
+            <button class="icon-btn" id="chat-expand" type="button" aria-pressed="false" data-i18n-attr="aria-label:chatExpand;title:chatExpand">
+              <svg class="icon icon-expand" aria-hidden="true"><use href="#i-expand"/></svg>
+              <svg class="icon icon-collapse" aria-hidden="true"><use href="#i-collapse"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-stage">
+          <div class="chat-skeleton" id="chat-skeleton" aria-hidden="true">
+            <span class="sk sk-avatar"></span>
+            <span class="sk sk-line sk-w60"></span>
+            <span class="sk sk-line sk-w80"></span>
+            <span class="sk sk-card"></span><span class="sk sk-card"></span><span class="sk sk-card"></span>
+            <span class="sk sk-input"></span>
+          </div>
+          <span class="sr-only" role="status" data-i18n="chatLoading" id="chat-loading">Đang tải trợ lý…</span>
+          <iframe id="chat" title="DAV Assistant chat"
+            allow="clipboard-write; microphone"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <script>
+            (function () {
+              var card = document.getElementById('chat-card');
+              var frame = document.getElementById('chat');
+              frame.addEventListener('load', function () { frame.dataset.loaded = '1'; });
+              frame.src = card.dataset.chatUrl + document.documentElement.lang;
+            })();
+          </script>
+          <noscript><p class="chat-noscript"><a class="btn btn-primary" href="https://console-agents.fpt.ai/chat-widget/?connectionKey=wgt__u-Owby-sZBPvCC0_5h-Gw&amp;locale=vi" target="_blank" rel="noopener">Mở trợ lý / Open chat</a></p></noscript>
+
+          <div class="chat-error" id="chat-error" hidden>
+            <svg class="icon icon-lg" aria-hidden="true"><use href="#i-alert"/></svg>
+            <p data-i18n="chatErrorTitle">Không tải được khung chat trong trang này.</p>
+            <div class="chat-error-actions">
+              <button class="btn btn-ghost" id="chat-retry" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg>
+                <span data-i18n="chatRetry">Thử lại</span>
+              </button>
+              <a class="btn btn-primary" id="chat-open" href="#" target="_blank" rel="noopener" data-i18n="chatOpen">Mở trợ lý / Open chat</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="open-full"><span data-i18n="chatSmall">Khung chat bị nhỏ?</span> <a id="chat-full" href="#" target="_blank" rel="noopener" data-i18n="chatOpenFull">Mở toàn màn hình ↗</a></div>
+      </section>
+    </div>
   </main>
 
-  <footer>© 2026 CLB AI &amp; Công nghệ – DAItech, Học viện Ngoại giao · Dữ liệu cập nhật đến 18/10/2026</footer>
+  <footer class="site-footer" data-i18n="footer">© 2026 CLB AI &amp; Công nghệ – DAItech, Học viện Ngoại giao · Dữ liệu cập nhật đến 18/10/2026</footer>
 
-<script>
-  // If the chat frame is blocked (e.g. an old browser ignoring frame-ancestors), show a direct link instead.
-  (function () {
-    var frame = document.getElementById('chat');
-    var loaded = false;
-    frame.addEventListener('load', function () { loaded = true; });
-    setTimeout(function () {
-      if (!loaded) {
-        frame.style.display = 'none';
-        document.getElementById('fallback').style.display = 'block';
-      }
-    }, 12000);
-  })();
-</script>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
