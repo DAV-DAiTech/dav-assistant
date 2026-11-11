@@ -1,0 +1,115 @@
+/*
+ * DAV Assistant design tokens.
+ * Palette derived from the DAV logo: navy (depth), globe blue, book red (accent).
+ * Theme is applied as <html data-theme="light|dark"> before first paint (see index.html).
+ */
+:root {
+  /* Brand */
+  --navy: #0a2a66;
+  --blue: #1a5fb4;
+  --blue-tint: #e8f0fb;
+  --red: #c8202f;
+  --red-hover: #a81a27;
+  /* CTA fill keeps white-text contrast in both themes */
+  --cta: #c8202f;
+  --cta-hover: #a81a27;
+
+  /* Surfaces & text (light) */
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --elevated: #ffffff;
+  --text: #1b2433;
+  --text-2: #5b6577;
+  --border: #e3e8f1;
+  --heading: #0a2a66;
+  --link: #1a5fb4;
+  --focus: #1a5fb4;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, #0a2a66 0%, #1a5fb4 100%);
+  --grad-text: linear-gradient(100deg, #0a2a66 0%, #1a5fb4 100%);
+  --grad-header: linear-gradient(115deg, rgba(6, 28, 72, 0.94) 0%, rgba(10, 42, 102, 0.9) 55%, rgba(18, 74, 150, 0.88) 100%);
+
+  /* Chips */
+  --chip-bg: #e8f0fb;
+  --chip-text: #0a2a66;
+  --chip-hover: #d9e6f9;
+  --chip-active-bg: linear-gradient(135deg, #0a2a66, #1a5fb4);
+  --chip-active-text: #ffffff;
+
+  /* Segmented controls (header) */
+  --seg-bg: rgba(255, 255, 255, 0.12);
+  --seg-fg: rgba(255, 255, 255, 0.88);
+  --seg-ind: #ffffff;
+  --seg-fg-active: #0a2a66;
+
+  /* Decorative */
+  --orb-blue: rgba(26, 95, 180, 0.34);
+  --orb-red: rgba(200, 32, 47, 0.14);
+  --globe-line: rgba(26, 95, 180, 0.1);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Shadows (soft, layered) */
+  --shadow-sm: 0 1px 2px rgba(10, 42, 102, 0.05), 0 2px 6px rgba(10, 42, 102, 0.04);
+  --shadow-md: 0 2px 4px rgba(10, 42, 102, 0.04), 0 8px 24px -8px rgba(10, 42, 102, 0.14);
+  --shadow-lg: 0 4px 8px rgba(10, 42, 102, 0.05), 0 24px 56px -20px rgba(10, 42, 102, 0.34);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur: 250ms;
+  --dur-slow: 350ms;
+  --dur-theme: 300ms;
+
+  /* Layout */
+  --header-h: 72px;
+  --header-h-small: 60px;
+  --content-w: 1180px;
+  --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --elevated: #16223b;
+  --text: #e8eef9;
+  --text-2: #9aa7bf;
+  --border: #24324f;
+  --heading: #e8eef9;
+  --link: #6ea3ff;
+  --focus: #6ea3ff;
+
+  --grad-brand: linear-gradient(135deg, #1a4fa0 0%, #2f6fd6 100%);
+  --grad-text: linear-gradient(100deg, #8ab8ff 0%, #4c8dff 100%);
+  --grad-header: linear-gradient(115deg, rgba(5, 14, 34, 0.94) 0%, rgba(9, 28, 66, 0.92) 60%, rgba(14, 44, 98, 0.9) 100%);
+
+  --chip-bg: #16223b;
+  --chip-text: #cfe0ff;
+  --chip-hover: #1d2d4f;
+  --chip-active-bg: linear-gradient(135deg, #1a4fa0, #2f6fd6);
+
+  --orb-blue: rgba(76, 141, 255, 0.22);
+  --orb-red: rgba(255, 77, 94, 0.1);
+  --globe-line: rgba(110, 163, 255, 0.12);
+
+  --red: #ff4d5e;
+  --red-hover: #ff6b79;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.25), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.3), 0 24px 56px -20px rgba(0, 0, 0, 0.7);
+}
