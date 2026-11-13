@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  MotionConfig,
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 import { ArrowRight, History, RotateCcw, Sparkles, X } from "lucide-react";
 import {
   historyStore,
@@ -14,10 +19,12 @@ import { AmbientBackground } from "./primitives";
 import { Header, EcosystemMenu, type Theme } from "./header";
 import { Welcome, Discovery } from "./welcome";
 import { Composer } from "./composer";
+import { TopicSuggestions } from "./topics";
 import { HistoryPanel } from "./history";
 import { Messages } from "./messages";
 
 export function DavWorkspace() {
+  const reduced = useReducedMotion();
   const [language, setLanguage] = useState<Language>("vi");
   const [theme, setTheme] = useState<Theme>("dark");
   const [ready, setReady] = useState(false);
@@ -139,14 +146,12 @@ export function DavWorkspace() {
     setActiveNav("topics");
     setTimeout(
       () =>
-        document
-          .getElementById("topics")
-          ?.scrollIntoView({
-            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-              ? "instant"
-              : "smooth",
-            block: "center",
-          }),
+        document.getElementById("topics")?.scrollIntoView({
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "instant"
+            : "smooth",
+          block: "start",
+        }),
       60,
     );
   }
@@ -260,7 +265,10 @@ export function DavWorkspace() {
           onEcosystem={() => setEcosystemOpen(true)}
           notice={setToast}
         />
-        <main id="main" className="main-content">
+        <main
+          id="main"
+          className={`main-content ${active ? "is-conversation" : ""}`}
+        >
           <div className="workspace-toolbar">
             <div className="connection-chip" title={t.connectionNote}>
               <span className={online ? "status-dot" : "status-dot offline"} />
@@ -293,58 +301,97 @@ export function DavWorkspace() {
             </button>
           </div>
           <div className="chat-stage">
-            {active ? (
-              <>
-                <div className="conversation-heading">
-                  <div>
-                    <span className="eyebrow">{t.welcomeBack}</span>
-                    <h1>{active.title}</h1>
+            <AnimatePresence mode="popLayout" initial={false}>
+              {active ? (
+                <motion.div
+                  key="conversation"
+                  className="conversation-view"
+                  initial={{ opacity: 0, y: reduced ? 0 : 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reduced ? 0 : -24 }}
+                  transition={{ duration: reduced ? 0 : 0.4 }}
+                >
+                  <div className="conversation-heading">
+                    <div>
+                      <span className="eyebrow">{t.welcomeBack}</span>
+                      <h1>{active.title}</h1>
+                    </div>
+                    <button className="text-button" onClick={newChat}>
+                      <Sparkles size={15} />
+                      {t.newChat}
+                    </button>
                   </div>
-                  <button className="text-button" onClick={newChat}>
-                    <Sparkles size={15} />
-                    {t.newChat}
-                  </button>
-                </div>
-                <Messages
-                  messages={active.messages}
-                  language={language}
-                  streaming={streaming}
-                  notice={setToast}
-                  regenerate={() => {
-                    const last = active.messages.findLast(
-                      (m) => m.role === "user",
-                    );
-                    if (last) void send(last.content, true);
+                  <Messages
+                    messages={active.messages}
+                    language={language}
+                    streaming={streaming}
+                    notice={setToast}
+                    regenerate={() => {
+                      const last = active.messages.findLast(
+                        (m) => m.role === "user",
+                      );
+                      if (last) void send(last.content, true);
+                    }}
+                    rate={(id, rating) =>
+                      editConversation(active.id, {
+                        messages: active.messages.map((m) =>
+                          m.id === id
+                            ? {
+                                ...m,
+                                rating:
+                                  m.rating === rating ? undefined : rating,
+                              }
+                            : m,
+                        ),
+                      })
+                    }
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="welcome"
+                  className="welcome-transition"
+                  initial={{ opacity: 0, y: reduced ? 0 : -24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    y: reduced ? 0 : -24,
+                    filter: reduced ? "none" : "blur(8px)",
                   }}
-                  rate={(id, rating) =>
-                    editConversation(active.id, {
-                      messages: active.messages.map((m) =>
-                        m.id === id
-                          ? {
-                              ...m,
-                              rating: m.rating === rating ? undefined : rating,
-                            }
-                          : m,
-                      ),
-                    })
-                  }
-                />
-              </>
-            ) : (
-              <Welcome
-                language={language}
-                topic={topic}
-                setTopic={setTopic}
-                send={(input) => void send(input)}
-              />
-            )}
+                  transition={{ duration: reduced ? 0 : 0.4 }}
+                >
+                  <Welcome language={language} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* Keep this outside presence boundaries so FLIP preserves the live input. */}
             <Composer
+              docked={Boolean(active)}
               language={language}
               streaming={streaming}
               send={(input) => void send(input)}
               stop={stop}
               notice={setToast}
             />
+            <AnimatePresence mode="popLayout">
+              {!active && (
+                <motion.div
+                  key="topics"
+                  className="topics-transition"
+                  initial={{ opacity: 0, y: reduced ? 0 : 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reduced ? 0 : -24 }}
+                  transition={{ duration: reduced ? 0 : 0.35 }}
+                >
+                  <TopicSuggestions
+                    language={language}
+                    topic={topic}
+                    setTopic={setTopic}
+                    send={(input) => void send(input)}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           <Discovery
             language={language}

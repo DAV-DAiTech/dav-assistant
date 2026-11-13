@@ -9,6 +9,64 @@ import {
 import { text, headlines, featureDescriptions } from "../lib/frontend/i18n";
 import { suggestions } from "../lib/frontend/suggestions";
 import { ecosystem } from "../lib/frontend/ecosystem";
+import {
+  getCenteredScroll,
+  getScrollMetrics,
+  getTopicIndex,
+} from "../lib/frontend/topic-navigation";
+
+test("topic keyboard navigation reaches all ten tabs and wraps at either end", () => {
+  let index = 0;
+  const visited = new Set([index]);
+  for (let step = 0; step < 10; step++) {
+    index = getTopicIndex("ArrowRight", index, 10)!;
+    visited.add(index);
+  }
+  assert.equal(visited.size, 10);
+  assert.equal(index, 0);
+  assert.equal(getTopicIndex("ArrowLeft", 0, 10), 9);
+  assert.equal(getTopicIndex("Home", 6, 10), 0);
+  assert.equal(getTopicIndex("End", 1, 10), 9);
+  assert.equal(getTopicIndex("Tab", 0, 10), null);
+  assert.equal(getTopicIndex("ArrowRight", 0, 0), null);
+});
+
+test("overflow indicators match the available scroll directions including resize and overscroll", () => {
+  assert.deepEqual(getScrollMetrics(0, 400, 1000), {
+    left: false,
+    right: true,
+    progress: 0,
+    fraction: 0.4,
+  });
+  assert.deepEqual(getScrollMetrics(300, 400, 1000), {
+    left: true,
+    right: true,
+    progress: 0.5,
+    fraction: 0.4,
+  });
+  assert.deepEqual(getScrollMetrics(600, 400, 1000), {
+    left: true,
+    right: false,
+    progress: 1,
+    fraction: 0.4,
+  });
+  assert.deepEqual(getScrollMetrics(0, 1000, 1000), {
+    left: false,
+    right: false,
+    progress: 0,
+    fraction: 1,
+  });
+  assert.equal(getScrollMetrics(-20, 400, 1000).progress, 0);
+  assert.equal(getScrollMetrics(700, 400, 1000).progress, 1);
+  assert.equal(getScrollMetrics(0, 0, 0).fraction, 1);
+});
+
+test("tab centering clamps to the scrollable range without a vertical scroll target", () => {
+  assert.equal(getCenteredScroll(0, 100, 400, 100, 100, 1000), 0);
+  assert.equal(getCenteredScroll(0, 100, 400, 450, 100, 1000), 200);
+  assert.equal(getCenteredScroll(600, 100, 400, 400, 100, 1000), 600);
+  assert.equal(getCenteredScroll(0, 100, 1000, 100, 100, 600), 0);
+});
 
 const storage = new Map<string, string>();
 Object.defineProperty(globalThis, "localStorage", {

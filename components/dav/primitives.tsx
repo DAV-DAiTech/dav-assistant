@@ -122,9 +122,51 @@ export function AmbientBackground() {
   useEffect(() => {
     if (reduced) return;
     let frame = 0;
+    let previousCard: HTMLElement | null = null;
+    let previousIcon: HTMLElement | null = null;
+    const reset = (node: HTMLElement | null, properties: string[]) =>
+      properties.forEach((property) => node?.style.removeProperty(property));
     const move = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        const target = e.target as HTMLElement;
+        const card = target.closest<HTMLElement>(
+          ".suggestion-card, .feature-card",
+        );
+        const icon = target.closest<HTMLElement>(".icon-button");
+        if (previousCard !== card)
+          reset(previousCard, ["--tilt-x", "--tilt-y"]);
+        if (previousIcon !== icon)
+          reset(previousIcon, ["--magnet-x", "--magnet-y"]);
+        previousCard = card;
+        previousIcon = icon;
+        if (card) {
+          const bounds = card.getBoundingClientRect();
+          const x = e.clientX - bounds.left,
+            y = e.clientY - bounds.top;
+          card.style.setProperty("--spot-x", `${x}px`);
+          card.style.setProperty("--spot-y", `${y}px`);
+          card.style.setProperty(
+            "--tilt-x",
+            `${Math.max(-4, Math.min(4, -(y / bounds.height - 0.5) * 8))}deg`,
+          );
+          card.style.setProperty(
+            "--tilt-y",
+            `${Math.max(-4, Math.min(4, (x / bounds.width - 0.5) * 8))}deg`,
+          );
+        }
+        if (icon) {
+          const bounds = icon.getBoundingClientRect();
+          icon.style.setProperty(
+            "--magnet-x",
+            `${(e.clientX - bounds.left - bounds.width / 2) * 0.18}px`,
+          );
+          icon.style.setProperty(
+            "--magnet-y",
+            `${(e.clientY - bounds.top - bounds.height / 2) * 0.18}px`,
+          );
+        }
         ref.current?.style.setProperty(
           "--pointer-x",
           `${(e.clientX / innerWidth - 0.5) * 18}px`,

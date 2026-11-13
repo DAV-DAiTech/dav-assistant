@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowUpRight,
@@ -34,6 +34,38 @@ type Props = {
 };
 export function Header(p: Props) {
   const t = text[p.language];
+  const header = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const node = header.current;
+    if (!node) return;
+    let frame = 0;
+    let previous = 0;
+    const measure = () => {
+      frame = 0;
+      const clearance = Math.ceil(
+        node.offsetHeight + parseFloat(getComputedStyle(node).top) + 24,
+      );
+      if (clearance !== previous) {
+        previous = clearance;
+        document.documentElement.style.setProperty(
+          "--header-clearance",
+          `${clearance}px`,
+        );
+      }
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(node);
+    window.addEventListener("resize", schedule, { passive: true });
+    schedule();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", schedule);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
   const [menu, setMenu] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
   const { scrollYProgress, scrollY } = useScroll();
@@ -116,6 +148,7 @@ export function Header(p: Props) {
     <>
       <div className="header-fade" />
       <motion.header
+        ref={header}
         className={`glass-header ${scrolled ? "is-scrolled" : ""}`}
         style={{ scale: headerScale }}
       >

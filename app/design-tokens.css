@@ -41,6 +41,19 @@
   --header-text: #f4f8ff;
   --header-muted: #acbcd6;
   --card-glow: rgba(46, 125, 255, 0.12);
+  --glass-fill: rgba(19, 33, 62, 0.62);
+  --glass-capsule: rgba(25, 45, 80, 0.42);
+  --glass-blur: 20px;
+  --glass-highlight: rgba(201, 225, 255, 0.12);
+  --glass-edge: linear-gradient(130deg, #93c4ff52, #65aaff14 45%, #ff3b5c20);
+  --glass-shadow:
+    inset 0 1px 0 var(--glass-highlight), 0 12px 36px #020b2420,
+    0 0 24px #2e7dff08;
+  --control-fill: rgba(3, 15, 36, 0.38);
+  --header-active: #edf5ff;
+  --header-clearance: 112px;
+  --dock-height: 154px;
+  --motion-duration: 0.3s;
   color-scheme: dark;
 }
 :root[data-theme="light"] {
@@ -63,6 +76,18 @@
     #0a2a66 100%
   );
   --card-glow: rgba(46, 125, 255, 0.06);
+  --header: rgba(249, 252, 255, 0.84);
+  --header-text: #12264a;
+  --header-muted: #526581;
+  --header-active: #154b98;
+  --glass-fill: rgba(255, 255, 255, 0.72);
+  --glass-capsule: rgba(255, 255, 255, 0.44);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --glass-edge: linear-gradient(130deg, #619bff44, #6ca3ef1a 45%, #ff3b5c18);
+  --glass-shadow:
+    inset 0 1px 0 var(--glass-highlight), 0 12px 36px #2456a00b,
+    0 0 24px #2e7dff05;
+  --control-fill: rgba(210, 226, 250, 0.38);
   color-scheme: light;
 }
 @property --border-angle {
