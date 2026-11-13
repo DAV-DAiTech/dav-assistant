@@ -149,11 +149,29 @@ export function AmbientBackground() {
       if (cancelled) return;
       const lenis = new Lenis({
         autoRaf: true,
+        autoResize: false,
         duration: 1.05,
         prevent: (node) =>
           node.hasAttribute("data-lenis-prevent") || node.tagName === "DIALOG",
       });
-      cleanup = () => lenis.destroy();
+      let resizeFrame = 0;
+      const scheduleResize = () => {
+        if (resizeFrame) return;
+        // Keep scroll updates outside ResizeObserver delivery to avoid layout feedback.
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = 0;
+          lenis.resize();
+        });
+      };
+      const observer = new ResizeObserver(scheduleResize);
+      observer.observe(document.body);
+      window.addEventListener("resize", scheduleResize, { passive: true });
+      cleanup = () => {
+        observer.disconnect();
+        window.removeEventListener("resize", scheduleResize);
+        cancelAnimationFrame(resizeFrame);
+        lenis.destroy();
+      };
     });
     return () => {
       cancelled = true;

@@ -9,6 +9,7 @@ body {
 }
 html {
   scroll-padding-top: 110px;
+  scrollbar-gutter: stable;
 }
 body {
   font-family: var(--font-body);
