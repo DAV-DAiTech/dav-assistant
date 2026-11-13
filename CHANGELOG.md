@@ -2,7 +2,7 @@
 
 ## v4 — 2026-11-13
 
-- Replaced the active workspace with a componentized, frontend-only DAV experience; existing backend files are unchanged and are not called by the redesigned page.
+- Replaced the active workspace with a componentized, frontend-only DAV experience. The remote restore commit’s backend removals and legacy configuration changes are preserved; only the Next.js frontend runtime files needed by this redesign are restored. The redesigned page makes no backend calls.
 - Added navy, blue, sky, red, and ice design tokens in `app/design-tokens.css`; added responsive glass styling in `app/dav.css`.
 - Restored Vietnamese-first VI/EN controls, Light/Dark/System preferences, responsive navigation, ecosystem mega-menu, QR sharing, and fullscreen controls.
 - Added a random bilingual headline, ten configured topics with four prompts each, reveal animations, pointer spotlights, reduced-motion support, and a discovery section.
