@@ -74,7 +74,7 @@ export function Messages({
                     remarkPlugins={[remarkGfm]}
                     components={{
                       a: ({ children, href }) => (
-                        <a href={href} target="_blank" rel="noreferrer">
+                        <a href={href} target="_blank" rel="noopener noreferrer">
                           {children}
                         </a>
                       ),
@@ -99,7 +99,7 @@ export function Messages({
                       <a
                         href="https://dav.edu.vn"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                       >
                         {t.demoSource}
                         <ArrowUpRight size={12} />
