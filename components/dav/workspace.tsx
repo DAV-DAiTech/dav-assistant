@@ -166,9 +166,11 @@ export function DavWorkspace() {
       updatedAt: Date.now(),
       messages: [],
     };
-    const previous = regenerate
-      ? conversation.messages.slice(0, -1)
-      : conversation.messages;
+    const lastMessage = conversation.messages.at(-1);
+    const previous =
+      regenerate && lastMessage?.role === "assistant"
+        ? conversation.messages.slice(0, -1)
+        : conversation.messages;
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",

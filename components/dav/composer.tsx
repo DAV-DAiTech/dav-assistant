@@ -162,8 +162,8 @@ export function Composer({
           <button
             type="button"
             className="icon-button attach-button"
-            title={t.attach}
-            aria-label={t.attach}
+            title={`${t.attach} (${t.soon})`}
+            aria-label={`${t.attach} (${t.soon})`}
             onClick={() => fileInput.current?.click()}
           >
             <Plus size={22} />
@@ -191,8 +191,8 @@ export function Composer({
           <button
             type="button"
             className={`icon-button mic-button ${micActive ? "mic-active" : ""}`}
-            title={t.mic}
-            aria-label={t.mic}
+            title={`${t.mic} (${t.soon})`}
+            aria-label={`${t.mic} (${t.soon})`}
             onClick={() => {
               setMicActive(true);
               notice(t.micNote);
