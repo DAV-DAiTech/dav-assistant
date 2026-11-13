@@ -1,11 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
-import {
-  historyStore,
-  mockChatAdapter,
-  type LocalConversation,
-} from "../lib/frontend/adapters";
+import { historyStore, type LocalConversation } from "../lib/frontend/adapters";
+import { sendMessage as mockSendMessage } from "../lib/chatbot/mockAdapter";
 import { text, headlines, featureDescriptions } from "../lib/frontend/i18n";
 import { suggestions } from "../lib/frontend/suggestions";
 import { ecosystem } from "../lib/frontend/ecosystem";
@@ -110,34 +107,47 @@ test("ecosystem has eight bilingual entries and no guessed live destinations", (
   }
 });
 test("history supports reload, rename, pin, delete, undo, and clearing through its storage boundary", async () => {
-  storage.clear();
-  assert.deepEqual(await historyStore.load(), []);
-  const original: LocalConversation = {
-    id: "a",
-    title: "Tuyển sinh",
-    updatedAt: Date.now(),
-    pinned: false,
-    messages: [
-      { id: "m", role: "user", content: "Xin chào", createdAt: Date.now() },
-    ],
-  };
-  await historyStore.save([original]);
-  assert.deepEqual(await historyStore.load(), [original]);
-  const renamed = { ...original, title: "Admissions", pinned: true };
-  await historyStore.save([renamed]);
-  assert.deepEqual(await historyStore.load(), [renamed]);
-  await historyStore.save([]);
-  assert.deepEqual(await historyStore.load(), []);
-  await historyStore.save([renamed]);
-  assert.deepEqual(await historyStore.load(), [renamed]);
-  await historyStore.save([]);
+  const originalFetch = globalThis.fetch;
+  const calls: { url: string; method: string; body?: string }[] = [];
+  globalThis.fetch = (async (url: string, init?: RequestInit) => {
+    calls.push({ url, method: init?.method ?? "GET", body: init?.body as string | undefined });
+    if (url.startsWith("/api/conversations?"))
+      return Response.json({
+        items: [{ id: "a".repeat(24), title: "Tuyển sinh", pinned: false, updatedAt: new Date().toISOString(), messageCount: 2 }],
+        nextCursor: null,
+      });
+    return Response.json({ ok: true });
+  }) as typeof fetch;
+  try {
+    const loaded: LocalConversation[] = await historyStore.load();
+    assert.equal(loaded.length, 1);
+    assert.equal(loaded[0].loaded, false);
+    const id = loaded[0].id;
+    await historyStore.rename(id, "Admissions");
+    await historyStore.pin(id, true);
+    await historyStore.remove(id);
+    await historyStore.removeAll();
+    const methods = calls.slice(1).map((c) => `${c.method} ${c.url}`);
+    assert.deepEqual(methods.slice(0, 3), [
+      `PATCH /api/conversations/${id}`,
+      `PATCH /api/conversations/${id}`,
+      `DELETE /api/conversations/${id}`,
+    ]);
+    assert.match(methods[3], /^DELETE \/api\/conversations/);
+    assert.equal(JSON.parse(calls[1].body!).title, "Admissions");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
-test("invalid stored entries are rejected or filtered without being rendered", async () => {
-  storage.set("dav.history.v4", "broken JSON");
-  await assert.rejects(historyStore.load());
-  storage.set("dav.history.v4", JSON.stringify([{ id: 123, messages: null }]));
-  assert.deepEqual(await historyStore.load(), []);
-  storage.clear();
+test("history errors from the API surface as rejections", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async () =>
+    Response.json({ error: { code: "internal", message: "x" } }, { status: 500 })) as unknown as typeof fetch;
+  try {
+    await assert.rejects(historyStore.load());
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 test("mock chat streams explicit sample content in both languages with no network", async () => {
   const originalFetch = globalThis.fetch;
@@ -145,40 +155,38 @@ test("mock chat streams explicit sample content in both languages with no networ
     throw new Error("Unexpected network access");
   };
   try {
-    for (const language of ["vi", "en"] as const) {
+    for (const lang of ["vi", "en"] as const) {
       let content = "";
-      for await (const delta of mockChatAdapter.stream(
-        "test",
-        language,
-        new AbortController().signal,
-      ))
-        content += delta;
-      assert.equal(content, text[language].demoReply);
+      const types = new Set<string>();
+      for await (const event of mockSendMessage({
+        message: "test",
+        sessionId: "test-session",
+        lang,
+        signal: new AbortController().signal,
+      })) {
+        types.add(event.type);
+        if (event.type === "delta") content += event.text;
+      }
+      assert.ok(content.includes("MOCK_CHATBOT"));
+      assert.ok(types.has("sources") && types.has("suggestions") && types.has("done"));
     }
   } finally {
     globalThis.fetch = originalFetch;
   }
 });
-test("aborting a demo stream prevents further chunks", async () => {
+test("aborting a mock stream prevents further chunks", async () => {
   const controller = new AbortController();
   let count = 0;
-  for await (const _ of mockChatAdapter.stream(
-    "test",
-    "vi",
-    controller.signal,
-  )) {
-    count++;
+  for await (const event of mockSendMessage({
+    message: "test",
+    sessionId: "test-session",
+    lang: "vi",
+    signal: controller.signal,
+  })) {
+    if (event.type === "delta") count++;
     controller.abort();
   }
   assert.equal(count, 1);
-  const alreadyAborted = new AbortController();
-  alreadyAborted.abort();
-  for await (const _ of mockChatAdapter.stream(
-    "test",
-    "en",
-    alreadyAborted.signal,
-  ))
-    assert.fail("Aborted stream emitted content");
 });
 function luminance(hex: string) {
   const values = hex

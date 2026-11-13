@@ -258,3 +258,27 @@ export const headlines: Record<Language, string[]> = {
     "Ask anything about the Diplomatic Academy of Vietnam!",
   ],
 };
+export const backendErrors = {
+  vi: {
+    invalid_input: "Yêu cầu không hợp lệ. Vui lòng kiểm tra nội dung và thử lại.",
+    not_found: "Không tìm thấy cuộc trò chuyện.",
+    forbidden: "Yêu cầu bị từ chối.",
+    rate_limited: "Bạn gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.",
+    config: "Lỗi cấu hình chatbot. Vui lòng báo cho ban quản trị.",
+    unavailable: "Không thể kết nối tới trợ lý, vui lòng thử lại.",
+    upstream: "Trợ lý đang gặp sự cố. Vui lòng thử lại sau.",
+    database: "Không thể truy cập lịch sử trò chuyện. Vui lòng thử lại.",
+    internal: "Đã xảy ra lỗi. Vui lòng thử lại.",
+  },
+  en: {
+    invalid_input: "Invalid request. Please check your message and try again.",
+    not_found: "Conversation not found.",
+    forbidden: "Request rejected.",
+    rate_limited: "Too many requests. Please try again in a few minutes.",
+    config: "Chatbot configuration error. Please notify the administrators.",
+    unavailable: "Cannot reach the assistant, please retry.",
+    upstream: "The assistant ran into a problem. Please try again later.",
+    database: "Cannot access chat history. Please try again.",
+    internal: "Something went wrong. Please try again.",
+  },
+} as const;

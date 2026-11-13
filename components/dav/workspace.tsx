@@ -9,11 +9,14 @@ import {
 } from "framer-motion";
 import { ArrowRight, History, RotateCcw, Sparkles, X } from "lucide-react";
 import {
+  fetchHealth,
   historyStore,
-  mockChatAdapter,
   type LocalConversation,
   type ChatMessage,
 } from "@/lib/frontend/adapters";
+import { setApiLanguage } from "@/lib/frontend/api";
+import { chatClient } from "@/lib/frontend/chat-client";
+import { newObjectId } from "@/lib/clientId";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { AmbientBackground } from "./primitives";
 import { Header, EcosystemMenu, type Theme } from "./header";
@@ -34,14 +37,16 @@ export function DavWorkspace() {
   const [ecosystemOpen, setEcosystemOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [streaming, setStreaming] = useState(false);
-  const [online, setOnline] = useState(true);
+  const [browserOnline, setOnline] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [undo, setUndo] = useState<LocalConversation[] | null>(null);
   const controller = useRef<AbortController | null>(null);
   const current = useRef<LocalConversation[]>([]);
+  const pendingDelete = useRef<{ ids: string[] | null; timer: ReturnType<typeof setTimeout> } | null>(null);
   const t = text[language];
+  setApiLanguage(language);
   const { data, isLoading, error, mutate } = useSWR(
-    "dav-local-history-v4",
+    "dav-history-api-v1",
     () => historyStore.load(),
     {
       revalidateOnFocus: false,
@@ -49,9 +54,41 @@ export function DavWorkspace() {
       shouldRetryOnError: false,
     },
   );
+  const health = useSWR("dav-health-v1", fetchHealth, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+    refreshInterval: 120_000,
+  });
+  const online =
+    browserOnline && !health.error && health.data?.status !== "degraded";
   useEffect(() => {
     if (data) current.current = data;
   }, [data]);
+  useEffect(() => {
+    const flush = () => flushDelete();
+    window.addEventListener("pagehide", flush);
+    return () => window.removeEventListener("pagehide", flush);
+  }, []);
+  useEffect(() => {
+    if (!selected) return;
+    const conversation = current.current.find((c) => c.id === selected);
+    if (!conversation || conversation.loaded !== false) return;
+    let cancelled = false;
+    historyStore
+      .get(selected)
+      .then((full) => {
+        if (cancelled || !full) return;
+        commit(
+          current.current.map((c) =>
+            c.id === full.id && c.loaded === false ? full : c,
+          ),
+        );
+      })
+      .catch(() => !cancelled && setToast(t.storageError));
+    return () => {
+      cancelled = true;
+    };
+  }, [selected, data, t.storageError]);
   useEffect(() => {
     try {
       const preference = localStorage.getItem("dav.theme.v4");
@@ -103,11 +140,28 @@ export function DavWorkspace() {
     return () => clearTimeout(timer);
   }, [toast, undo]);
 
-  function commit(next: LocalConversation[], persist = true) {
+  function commit(next: LocalConversation[]) {
     current.current = next;
     void mutate(next, { revalidate: false });
-    if (persist)
-      void historyStore.save(next).catch(() => setToast(t.storageError));
+  }
+  function updateConversation(
+    id: string,
+    update: (c: LocalConversation) => LocalConversation,
+  ) {
+    commit(current.current.map((c) => (c.id === id ? update(c) : c)));
+  }
+  function flushDelete() {
+    const pending = pendingDelete.current;
+    if (!pending) return;
+    clearTimeout(pending.timer);
+    pendingDelete.current = null;
+    const request = pending.ids
+      ? Promise.all(pending.ids.map((id) => historyStore.remove(id)))
+      : historyStore.removeAll();
+    void request.catch(() => {
+      setToast(t.storageError);
+      void mutate();
+    });
   }
   function stop() {
     if (!controller.current) return;
@@ -158,10 +212,10 @@ export function DavWorkspace() {
   async function send(input: string, regenerate = false) {
     if (controller.current || isLoading) return;
     setActiveNav("chat");
-    const id = selected || crypto.randomUUID();
+    const id = selected || newObjectId();
     let conversation = current.current.find((c) => c.id === id) || {
       id,
-      title: input.slice(0, 70),
+      title: input.trim().replace(/\s+/g, " ").slice(0, 60),
       pinned: false,
       updatedAt: Date.now(),
       messages: [],
@@ -194,49 +248,90 @@ export function DavWorkspace() {
     const abort = new AbortController();
     controller.current = abort;
     scrollChat();
+    let replyId = reply.id;
+    const patchReply = (change: (m: ChatMessage) => ChatMessage) =>
+      updateConversation(id, (c) => ({
+        ...c,
+        messages: c.messages.map((m) => (m.id === replyId ? change(m) : m)),
+      }));
     try {
-      for await (const chunk of mockChatAdapter.stream(
-        input,
-        language,
-        abort.signal,
-      )) {
-        if (abort.signal.aborted) break;
-        commit(
-          current.current.map((c) =>
-            c.id === id
-              ? {
-                  ...c,
-                  messages: c.messages.map((m) =>
-                    m.id === reply.id
-                      ? { ...m, content: m.content + chunk }
-                      : m,
-                  ),
-                }
-              : c,
-          ),
-          false,
-        );
-      }
+      await chatClient.sendMessage(
+        { conversationId: id, message: input, lang: language, regenerate, signal: abort.signal },
+        {
+          onMeta: ({ messageId, title }) => {
+            patchReply((m) => ({ ...m, id: messageId }));
+            replyId = messageId;
+            updateConversation(id, (c) => ({ ...c, title, loaded: true }));
+          },
+          onDelta: (chunk) => {
+            if (!abort.signal.aborted)
+              patchReply((m) => ({ ...m, content: m.content + chunk }));
+          },
+          onSources: (sources) => patchReply((m) => ({ ...m, sources })),
+          onSuggestions: (suggestions) =>
+            patchReply((m) => ({ ...m, suggestions })),
+          onDone: () => void health.mutate(),
+          onError: ({ code, message }) => {
+            setToast(message);
+            if (code === "unavailable" || code === "upstream" || code === "config")
+              void health.mutate();
+          },
+        },
+      );
     } finally {
       if (controller.current === abort) {
         controller.current = null;
         setStreaming(false);
       }
-      commit(current.current);
+      updateConversation(id, (c) => ({
+        ...c,
+        messages: c.messages.filter(
+          (m) => m.role !== "assistant" || m.content.length > 0,
+        ),
+      }));
     }
   }
-  function editConversation(id: string, changes: Partial<LocalConversation>) {
-    commit(
-      current.current.map((c) => (c.id === id ? { ...c, ...changes } : c)),
-    );
+  function editConversation(id: string, changes: Pick<Partial<LocalConversation>, "title" | "pinned">) {
+    const before = current.current.find((c) => c.id === id);
+    if (!before) return;
+    updateConversation(id, (c) => ({ ...c, ...changes }));
+    const request =
+      changes.title !== undefined
+        ? historyStore.rename(id, changes.title)
+        : historyStore.pin(id, Boolean(changes.pinned));
+    void request.catch(() => {
+      updateConversation(id, (c) => ({ ...c, title: before.title, pinned: before.pinned }));
+      setToast(t.storageError);
+    });
+  }
+  function rateMessage(conversationId: string, messageId: string, rating: "up" | "down") {
+    const message = current.current
+      .find((c) => c.id === conversationId)
+      ?.messages.find((m) => m.id === messageId);
+    if (!message) return;
+    const previous = message.rating;
+    const next = previous === rating ? undefined : rating;
+    const setRating = (value: typeof previous) =>
+      updateConversation(conversationId, (c) => ({
+        ...c,
+        messages: c.messages.map((m) => (m.id === messageId ? { ...m, rating: value } : m)),
+      }));
+    setRating(next);
+    void historyStore.feedback(messageId, next ?? null).catch(() => {
+      setRating(previous);
+      setToast(t.storageError);
+    });
   }
   function remove(id?: string) {
     stop();
+    flushDelete();
     const removed = current.current.filter((c) => !id || c.id === id);
     setUndo(removed);
     commit(id ? current.current.filter((c) => c.id !== id) : []);
     if (!id || selected === id) setSelected(null);
     setToast(t.deleted);
+    // The server delete waits for the undo window so restoring needs no re-upload.
+    pendingDelete.current = { ids: id ? [id] : null, timer: setTimeout(flushDelete, 8000) };
   }
   const active = (data || []).find((c) => c.id === selected);
   return (
@@ -283,6 +378,7 @@ export function DavWorkspace() {
                   aria-label={t.retry}
                   onClick={() => {
                     setOnline(navigator.onLine);
+                    void health.mutate();
                     setToast(t.connectionNote);
                   }}
                 >
@@ -334,19 +430,7 @@ export function DavWorkspace() {
                       );
                       if (last) void send(last.content, true);
                     }}
-                    rate={(id, rating) =>
-                      editConversation(active.id, {
-                        messages: active.messages.map((m) =>
-                          m.id === id
-                            ? {
-                                ...m,
-                                rating:
-                                  m.rating === rating ? undefined : rating,
-                              }
-                            : m,
-                        ),
-                      })
-                    }
+                    rate={(id, rating) => rateMessage(active.id, id, rating)}
                   />
                 </motion.div>
               ) : (
@@ -448,6 +532,10 @@ export function DavWorkspace() {
               {undo && (
                 <button
                   onClick={() => {
+                    if (pendingDelete.current) {
+                      clearTimeout(pendingDelete.current.timer);
+                      pendingDelete.current = null;
+                    }
                     commit([
                       ...undo,
                       ...current.current.filter(
