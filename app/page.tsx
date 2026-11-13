@@ -1,5 +1,5 @@
-import { AssistantWorkspace } from "@/components/assistant-workspace";
+import { DavWorkspace } from "@/components/dav/workspace";
 
 export default function HomePage() {
-  return <AssistantWorkspace />;
+  return <DavWorkspace />;
 }
