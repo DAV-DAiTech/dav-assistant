@@ -64,18 +64,16 @@ export function Messages({
             <div className="message-body">
               <span className="message-author">
                 {m.role === "assistant" ? "DAV Assistant" : t.you}
-                {m.role === "assistant" && (
-                  <span className="message-demo">{t.demo}</span>
-                )}
               </span>
               <div className="message-bubble">
                 {m.content ? (
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
+                      table: ({ children }) => <div className="table-scroll" tabIndex={0} role="region" aria-label={t.table}><table>{children}</table></div>,
                       a: ({ children, href }) => (
                         <a href={href} target="_blank" rel="noopener noreferrer">
-                          {children}
+                          {children}<ArrowUpRight size={14} aria-hidden="true" />
                         </a>
                       ),
                     }}
@@ -94,17 +92,17 @@ export function Messages({
                 m.content &&
                 !(streaming && i === messages.length - 1) && (
                   <>
-                    <div className="source-chips">
-                      <span>{t.sources}</span>
-                      <a
-                        href="https://dav.edu.vn"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t.demoSource}
-                        <ArrowUpRight size={12} />
-                      </a>
-                    </div>
+                    {m.sources?.some((source) => /^https?:\/\//i.test(source.url)) && (
+                      <div className="source-chips">
+                        <span>{t.sources}</span>
+                        {m.sources.filter((source) => /^https?:\/\//i.test(source.url)).map((source, index) => (
+                          <a key={`${source.url}-${index}`} href={source.url} target="_blank" rel="noopener noreferrer">
+                            {source.title || source.url}
+                            <ArrowUpRight size={14} aria-hidden="true" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                     <div className="message-actions">
                       <button
                         className="icon-button"

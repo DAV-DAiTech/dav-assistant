@@ -46,7 +46,7 @@ export function Modal({
   onClose,
   className = "",
 }: {
-  children: ReactNode;
+  children: ReactNode | ((close: () => void) => ReactNode);
   title: string;
   closeLabel: string;
   onClose: () => void;
@@ -54,6 +54,7 @@ export function Modal({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [closing, setClosing] = useState(false);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduced = useReducedMotion();
   const onCloseRef = useRef(onClose);
@@ -65,19 +66,25 @@ export function Modal({
       return;
     }
     setClosing(true);
-    closeTimer.current = setTimeout(() => onCloseRef.current(), 180);
+    closeTimer.current = setTimeout(() => onCloseRef.current(), 250);
   }
   useEffect(() => {
     const dialog = ref.current;
     const focused = document.activeElement as HTMLElement | null;
     dialog?.showModal();
+    if (dialog && focused) {
+      const trigger = focused.getBoundingClientRect();
+      const panel = dialog.getBoundingClientRect();
+      dialog.style.setProperty("--origin-x", `${Math.max(0, Math.min(panel.width, trigger.left + trigger.width / 2 - panel.left))}px`);
+      dialog.style.setProperty("--origin-y", `${Math.max(0, Math.min(panel.height, trigger.top - panel.top))}px`);
+    }
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       if (closeTimer.current) clearTimeout(closeTimer.current);
       dialog?.close();
       document.body.style.overflow = overflow;
-      focused?.focus();
+      focused?.focus({ preventScroll: true });
     };
   }, []);
   return (
@@ -85,6 +92,20 @@ export function Modal({
       ref={ref}
       className={`glass-modal ${className} ${closing ? "is-closing" : ""}`}
       aria-label={title}
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const nodes = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), textarea, select, [tabindex="0"]')).filter((node) => node.getClientRects().length > 0);
+        const first = nodes[0], last = nodes.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }}
       onCancel={(e) => {
         e.preventDefault();
         requestClose();
@@ -102,6 +123,22 @@ export function Modal({
         }
       }}
     >
+      {className.includes("ecosystem-modal") && (
+        <div
+          className="sheet-handle"
+          aria-hidden="true"
+          onPointerDown={(event) => {
+            swipe.current = { x: event.clientX, y: event.clientY };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerUp={(event) => {
+            const start = swipe.current;
+            swipe.current = null;
+            if (start && event.clientY - start.y > 60 && Math.abs(event.clientX - start.x) < 70) requestClose();
+          }}
+          onPointerCancel={() => { swipe.current = null; }}
+        ><span /></div>
+      )}
       <div className="modal-top">
         <h2>{title}</h2>
         <button
@@ -112,7 +149,7 @@ export function Modal({
           <X size={20} />
         </button>
       </div>
-      {children}
+      {typeof children === "function" ? children(requestClose) : children}
     </dialog>
   );
 }
@@ -132,7 +169,7 @@ export function AmbientBackground() {
       frame = requestAnimationFrame(() => {
         const target = e.target as HTMLElement;
         const card = target.closest<HTMLElement>(
-          ".suggestion-card, .feature-card",
+          ".suggestion-card, .feature-card, .ecosystem-card, .ecosystem-button",
         );
         const icon = target.closest<HTMLElement>(".icon-button");
         if (previousCard !== card)

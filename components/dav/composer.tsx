@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUp, FileText, Info, Mic, Plus, Square, X } from "lucide-react";
+import { ArrowUp, ArrowUpRight, FileText, Info, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 export function Composer({
   language,
@@ -230,18 +230,14 @@ export function Composer({
             <span className="hint-divider">·</span>
             {t.shiftEnter}
           </span>
-          <span className="demo-label">
-            <span />
-            {t.demo}
-          </span>
         </div>
       </div>
       <div className="disclaimer">
         <span>
           {t.disclaimer}{" "}
-          <a href="https://dav.edu.vn" target="_blank" rel="noreferrer">
-            dav.edu.vn
-          </a>
+          <a href="https://dav.edu.vn" target="_blank" rel="noopener noreferrer">
+            dav.edu.vn<ArrowUpRight size={13} aria-hidden="true" />
+          </a>.
         </span>
         <div className="details-tooltip">
           <button
@@ -264,7 +260,8 @@ export function Composer({
                 exit={{ opacity: 0, y: reduced ? 0 : 4 }}
                 transition={{ duration: reduced ? 0 : 0.25 }}
               >
-                <strong>{t.hotline}</strong>
+                <strong>{t.clubFullName}</strong>
+                <p>{t.hotline}</p>
                 <a href="tel:0943482840">0943.482.840</a>
                 <a href="tel:0936018433">0936.018.433</a>
                 <p>{t.privacy}</p>

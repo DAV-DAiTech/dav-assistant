@@ -84,18 +84,44 @@ test("both languages have identical UI keys and three matching headline slots", 
     assert.equal(featureDescriptions[language].length, 6);
   }
 });
-test("all ten topics provide four prompts per language and unique IDs", () => {
+test("nine question sets and one direct link retain all ten topic positions", () => {
   assert.equal(suggestions.length, 10);
   assert.equal(new Set(suggestions.map((topic) => topic.id)).size, 10);
-  for (const topic of suggestions)
+  const clubs = suggestions[8];
+  assert.equal(clubs.id, "clubs");
+  assert.equal(clubs.url, "https://dav-club-match.vercel.app/");
+  assert.equal(clubs.questions, undefined);
+  assert.equal(suggestions.filter((topic) => topic.questions).length, 9);
+  for (const topic of suggestions.filter((topic) => !topic.url))
     for (const lang of ["vi", "en"] as const) {
-      assert.equal(topic.questions[lang].length, 4);
-      assert.equal(new Set(topic.questions[lang]).size, 4);
+      assert.equal(topic.questions![lang].length, 4);
+      assert.equal(new Set(topic.questions![lang]).size, 4);
       assert.ok(topic.label[lang].length > 0);
     }
 });
+test("presentation dictionaries contain responsible attribution and no retired wording", () => {
+  const retired = /thử nghiệm|trải nghiệm|experimental|demo|mock|minh họa|beta/i;
+  for (const language of ["vi", "en"] as const) {
+    assert.doesNotMatch(JSON.stringify(text[language]), retired);
+    assert.ok(text[language].clubFullName.endsWith("– DAiTech"));
+    assert.ok(text[language].footer.includes(text[language].clubFullName));
+  }
+  assert.equal(text.vi.offline, "Mất kết nối");
+});
+
+test("first visit is light and preserves the system preference option", () => {
+  const layout = readFileSync(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  assert.ok(layout.includes("||'light'"));
+  assert.ok(layout.includes('data-ombre="blue-white"'));
+  assert.ok(layout.includes("t==='system'"));
+});
+
 test("ecosystem has eight bilingual entries and no guessed live destinations", () => {
   assert.equal(ecosystem.length, 8);
+  assert.deepEqual(ecosystem.slice(0, 2).map((item) => item.id), ["assistant", "club-match"]);
+  assert.equal(ecosystem[1].url, suggestions[8].url);
+  assert.equal(ecosystem[1].external, true);
+  assert.equal(ecosystem.filter((item) => item.status === "live").length, 2);
   for (const item of ecosystem) {
     assert.ok(
       item.label.vi &&

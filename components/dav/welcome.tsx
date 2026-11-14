@@ -1,5 +1,5 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Sparkles, Globe2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -16,10 +16,18 @@ let pageHeadlineIndex: number | null = null;
 export function Welcome({ language }: { language: Language }) {
   const t = text[language];
   const [headline, setHeadline] = useState<number | null>(null);
+  const reduced = useReducedMotion();
   useEffect(() => {
     pageHeadlineIndex ??= Math.floor(Math.random() * 3);
     setHeadline(pageHeadlineIndex);
-  }, []);
+    if (reduced) return;
+    const timer = setInterval(() => {
+      if (document.hidden) return;
+      pageHeadlineIndex = ((pageHeadlineIndex ?? 0) + 1) % 3;
+      setHeadline(pageHeadlineIndex);
+    }, 9000);
+    return () => clearInterval(timer);
+  }, [reduced]);
   return (
     <>
       <section className="welcome-hero">
@@ -36,7 +44,7 @@ export function Welcome({ language }: { language: Language }) {
           <AnimatePresence mode="wait">
             {headline !== null && (
               <motion.h1
-                key={language}
+                key={`${language}-${headline}`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -92,17 +100,22 @@ export function Discovery({
       <div className="feature-grid">
         {indices.map((index, i) => {
           const item = suggestions[index];
+          const content = <>
+            <span className="feature-number">0{i + 1}</span>
+            <span className="icon-tile"><item.icon size={23} /></span>
+            <h3>{item.label[language]}</h3>
+            <p>{descriptions[i]}</p>
+            <ArrowUpRight size={18} className="feature-arrow" aria-hidden="true" />
+          </>;
           return (
             <Reveal key={item.id} delay={i * 0.06}>
-              <button className="feature-card" onClick={() => onTopic(index)}>
-                <span className="feature-number">0{i + 1}</span>
-                <span className="icon-tile">
-                  <item.icon size={23} />
-                </span>
-                <h3>{item.label[language]}</h3>
-                <p>{descriptions[i]}</p>
-                <ArrowUpRight size={18} className="feature-arrow" />
-              </button>
+              {item.url ? (
+                <a className="feature-card external-feature" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={t.openClubMatch}>
+                  {content}
+                </a>
+              ) : (
+                <button className="feature-card" onClick={() => onTopic(index)}>{content}</button>
+              )}
             </Reveal>
           );
         })}
@@ -122,7 +135,6 @@ export function Discovery({
       </Reveal>
       <footer className="site-footer">
         <span>{t.footer}</span>
-        <span>{t.updated}</span>
       </footer>
     </div>
   );
