@@ -50,14 +50,13 @@ button, a, summary { transition: transform .3s var(--ease), box-shadow .3s var(-
 .ecosystem-button:before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(120px circle at var(--spot-x, 50%) var(--spot-y, 50%), #38bdf826, transparent 75%); box-shadow: inset 0 1px 0 #ffffff88, 0 0 20px #1e5bff15; opacity: .35; animation: breathe 4s ease-in-out infinite; z-index: -1; pointer-events: none; }
 .ecosystem-button:hover:before { opacity: 1; animation: none; }
 .ecosystem-button:hover:after { transition-duration: .6s; }
-.ecosystem-button:hover, .ecosystem-button:focus-visible, .composer-shell:focus-within {
+.ecosystem-button:hover, .ecosystem-button:focus-visible {
   background: linear-gradient(var(--surface-solid), var(--surface-solid)) padding-box, var(--grad-focus) border-box;
   animation: ombre-turn 6s linear infinite;
   box-shadow: var(--glass-shadow), var(--glow-blue);
 }
 .primary-button, .send-button, .send-button.is-streaming { background: var(--grad-primary); color: #fff; box-shadow: inset 0 1px 0 #ffffff50, 0 6px 20px #1e5bff24; }
 .primary-button { font-size: 15px; }
-.composer-border { display: none; }
 .hero-sparkle { background: var(--surface-solid); color: var(--accent-text); border-color: var(--border-strong); }
 .hero-mark:after { background: var(--grad-ombre) border-box; animation: none; }
 .hero-eyebrow { font-size: 13px; letter-spacing: .14em; }

@@ -1034,43 +1034,6 @@ svg {
     inset 0 1px 0 #e1efff0a;
   transition: box-shadow 0.3s;
 }
-.composer-border {
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1.5px;
-  overflow: hidden;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.3;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.composer-border:before {
-  content: "";
-  position: absolute;
-  width: 110%;
-  aspect-ratio: 1;
-  top: 50%;
-  left: 50%;
-  background: conic-gradient(
-    var(--blue),
-    var(--sky) 42%,
-    var(--blue) 70%,
-    var(--red) 84%,
-    var(--blue)
-  );
-  animation: conic-spin 9s linear infinite;
-  animation-play-state: paused;
-}
-.composer-shell:focus-within .composer-border {
-  opacity: 1;
-}
-.composer-shell:focus-within .composer-border:before {
-  animation-play-state: running;
-}
 .composer-shell:focus-within {
   box-shadow:
     var(--glass-shadow),

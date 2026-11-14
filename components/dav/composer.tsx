@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUp, ArrowUpRight, FileText, Info, Mic, Plus, Square, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUp, ArrowUpRight, FileText, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
-import { BorderBeam } from "./border-beam";
+import { RgbBorderComposer } from "./rgb-border-composer";
+import { ContactPopover } from "./contact-popover";
 export function Composer({
   language,
   streaming,
@@ -22,7 +23,6 @@ export function Composer({
   const t = text[language];
   const reduced = useReducedMotion();
   const area = useRef<HTMLDivElement>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
   useEffect(() => {
     const node = area.current;
     if (!node || !docked) return;
@@ -49,24 +49,8 @@ export function Composer({
       document.documentElement.style.removeProperty("--dock-height");
     };
   }, [docked]);
-  useEffect(() => {
-    if (!detailsOpen) return;
-    const close = (event: globalThis.PointerEvent) => {
-      if (!(event.target as HTMLElement).closest(".details-tooltip"))
-        setDetailsOpen(false);
-    };
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDetailsOpen(false);
-    };
-    document.addEventListener("pointerdown", close);
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("pointerdown", close);
-      document.removeEventListener("keydown", escape);
-    };
-  }, [detailsOpen]);
+
   const [input, setInput] = useState("");
-  const shell = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState(false);
   const [activity, setActivity] = useState(0);
   const [pulse, setPulse] = useState(0);
@@ -122,20 +106,20 @@ export function Composer({
       }}
     >
       <div
-        ref={shell}
         className="composer-shell"
+        data-focused={focused}
+        data-has-text={Boolean(input)}
+        onClick={(event) => {
+          if (!(event.target as HTMLElement).closest("button, input, textarea, a"))
+            textarea.current?.focus();
+        }}
         onFocus={() => setFocused(true)}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node | null))
             setFocused(false);
         }}
       >
-        <BorderBeam
-          host={shell}
-          focused={focused}
-          activity={activity}
-          pulse={pulse}
-        />
+        <RgbBorderComposer focused={focused} activity={activity} pulse={pulse} />
         {files.length > 0 && (
           <div className="attached-files">
             {files.map((name, i) => (
@@ -261,36 +245,7 @@ export function Composer({
             dav.edu.vn<ArrowUpRight size={13} aria-hidden="true" />
           </a>.
         </span>
-        <div className="details-tooltip">
-          <button
-            type="button"
-            className="details-trigger"
-            aria-expanded={detailsOpen}
-            aria-controls="composer-details"
-            onClick={() => setDetailsOpen(!detailsOpen)}
-          >
-            <Info size={13} />
-            {t.details}
-          </button>
-          <AnimatePresence>
-            {detailsOpen && (
-              <motion.div
-                id="composer-details"
-                role="note"
-                initial={{ opacity: 0, y: reduced ? 0 : 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduced ? 0 : 4 }}
-                transition={{ duration: reduced ? 0 : 0.25 }}
-              >
-                <strong>{t.clubFullName}</strong>
-                <p>{t.hotline}</p>
-                <a href="tel:0943482840">0943.482.840</a>
-                <a href="tel:0936018433">0936.018.433</a>
-                <p>{t.privacy}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <ContactPopover language={language} />
       </div>
     </motion.div>
   );

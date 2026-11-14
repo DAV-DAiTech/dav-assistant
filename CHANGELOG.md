@@ -1,5 +1,12 @@
 # Changelog
 
+## Composer and contacts — 2026-11-15
+
+- Replaced the SVG beam/dot and duplicate outer outline with shared `RgbBorderComposer`: a full-perimeter masked spectrum, independent hue drift, phase-preserving typing acceleration, send pulse, hidden-tab pause, and reduced-motion/static fallback. Kept the glass fill and radius; unfocused drafts retain a faint static ombre, empty borders fade out, and an input-level solid focus cue remains visible.
+- Aligned the unchanged bilingual disclaimer with a 32px Details pill; added `ContactPopover` with keyboard/click/desktop-hover opening, dismissal/focus restoration, viewport-clamped above/below positioning, and uniform compact contact rows.
+- Added the supplied Facebook and email destinations while retaining both hotline numbers, the personal-information note, and the full official club name. New labels are localized in VI/EN.
+- Changes are frontend-only; header, scroll-progress behavior, API, database, chatbot transport, history, and environment configuration are unchanged.
+
 ## v6 — 2026-11-14
 
 ### Presentation

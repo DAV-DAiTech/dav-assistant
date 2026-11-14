@@ -6,6 +6,42 @@ import { sendMessage as mockSendMessage } from "../lib/chatbot/mockAdapter";
 import { text, headlines, featureDescriptions } from "../lib/frontend/i18n";
 import { suggestions } from "../lib/frontend/suggestions";
 import { ecosystem } from "../lib/frontend/ecosystem";
+import { getContactPosition } from "../lib/frontend/contact-position";
+
+test("both composer layouts share the RGB border without changing send/history wiring", () => {
+  const composer = readFileSync(new URL("../components/dav/composer.tsx", import.meta.url), "utf8");
+  const workspace = readFileSync(new URL("../components/dav/workspace.tsx", import.meta.url), "utf8");
+  assert.equal((workspace.match(/<Composer\s/g) ?? []).length, 1);
+  assert.match(workspace, /docked=\{Boolean\(active\)\}/);
+  assert.equal((composer.match(/<RgbBorderComposer\s/g) ?? []).length, 1);
+  assert.match(composer, /<ContactPopover language=\{language\}/);
+  assert.doesNotMatch(composer, /BorderBeam|details-tooltip/);
+  assert.match(composer, /send\(input\.trim\(\)\)/);
+  assert.match(composer, /e\.nativeEvent\.isComposing \|\| e\.keyCode === 229/);
+});
+
+test("contact panel stays within each viewport and flips near the top", () => {
+  for (const width of [360, 768, 1280, 1920]) {
+    const panelWidth = width < 480 ? width * .92 : 360;
+    for (const left of [12, width / 2, width - 120]) {
+      const position = getContactPosition({ left, top: 700, bottom: 732, width: 100 }, panelWidth, 420, width, 900);
+      assert.equal(position.side, "top");
+      assert.ok(position.left >= 12);
+      assert.ok(position.left + panelWidth <= width - 12);
+      assert.ok(position.top >= 12);
+      assert.ok(position.arrow >= 24 && position.arrow <= panelWidth - 24);
+    }
+    const flipped = getContactPosition({ left: 40, top: 20, bottom: 52, width: 100 }, panelWidth, 420, width, 900);
+    assert.equal(flipped.side, "bottom");
+    assert.equal(flipped.top, 64);
+  }
+});
+
+test("contact panel limits height on short screens", () => {
+  const position = getContactPosition({ left: 30, top: 220, bottom: 252, width: 100 }, 331, 420, 360, 400);
+  assert.equal(position.maxHeight, 196);
+  assert.equal(position.top, 12);
+});
 import {
   getCenteredScroll,
   getScrollMetrics,
