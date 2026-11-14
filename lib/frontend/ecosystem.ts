@@ -9,12 +9,14 @@ import {
   Globe2,
 } from "lucide-react";
 import type { Bilingual } from "./i18n";
+export const CLUB_MATCH_URL = "https://dav-club-match.vercel.app/";
 export const ecosystem: {
   id: string;
   icon: typeof Sparkles;
   label: Bilingual;
   description: Bilingual;
   url: string | null;
+  external?: boolean;
   status: "live" | "soon";
 }[] = [
   {
@@ -26,6 +28,18 @@ export const ecosystem: {
       en: "Your companion for every question.",
     },
     url: "/",
+    status: "live",
+  },
+  {
+    id: "club-match",
+    icon: Users,
+    label: { vi: "DAV Club Match", en: "DAV Club Match" },
+    description: {
+      vi: "Kết nối CLB · Đoàn · Hội. Tìm cộng đồng phù hợp với bạn.",
+      en: "Connecting clubs, Youth Union and associations. Find the community that fits you.",
+    },
+    url: CLUB_MATCH_URL,
+    external: true,
     status: "live",
   },
   {
@@ -68,17 +82,6 @@ export const ecosystem: {
     description: {
       vi: "Theo nhịp sống của Học viện.",
       en: "Stay in tune with the Academy.",
-    },
-    url: null,
-    status: "soon",
-  },
-  {
-    id: "clubs",
-    icon: Users,
-    label: { vi: "CLB · Đoàn · Hội", en: "Clubs & societies" },
-    description: {
-      vi: "Tìm cộng đồng, tạo dấu ấn riêng.",
-      en: "Find your people. Make your mark.",
     },
     url: null,
     status: "soon",

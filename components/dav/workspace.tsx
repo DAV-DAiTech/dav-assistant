@@ -19,7 +19,8 @@ import { chatClient } from "@/lib/frontend/chat-client";
 import { newObjectId } from "@/lib/clientId";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { AmbientBackground } from "./primitives";
-import { Header, EcosystemMenu, type Theme } from "./header";
+import { Header, type Theme } from "./header";
+import { EcosystemMenu } from "./ecosystem-menu";
 import { Welcome, Discovery } from "./welcome";
 import { Composer } from "./composer";
 import { TopicSuggestions } from "./topics";
@@ -29,7 +30,7 @@ import { Messages } from "./messages";
 export function DavWorkspace() {
   const reduced = useReducedMotion();
   const [language, setLanguage] = useState<Language>("vi");
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   const [ready, setReady] = useState(false);
   const [topic, setTopic] = useState(0);
   const [activeNav, setActiveNav] = useState("chat");
@@ -97,7 +98,7 @@ export function DavWorkspace() {
       const lang = localStorage.getItem("dav.language.v4");
       if (lang === "en" || lang === "vi") setLanguage(lang);
     } catch {
-      /* Browsers can deny local storage; the demo remains usable in memory. */
+      /* Denied preference storage must not prevent use of the workspace. */
     }
     setReady(true);
     const connection = () => setOnline(navigator.onLine);
@@ -114,12 +115,22 @@ export function DavWorkspace() {
     if (!ready) return;
     const media = matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
-      document.documentElement.dataset.theme =
-        theme === "system" ? (media.matches ? "dark" : "light") : theme;
+      const resolved = theme === "system" ? (media.matches ? "dark" : "light") : theme;
+      document.documentElement.dataset.theme = resolved;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "light" ? "#FFFFFF" : "#080F1F");
     };
     apply();
     media.addEventListener("change", apply);
     document.documentElement.lang = language;
+    document.title = `DAV Assistant — ${t.clubFullName}`;
+    const description = language === "vi"
+      ? `Trợ lý AI song ngữ do ${t.clubFullName} phát triển. Khám phá tuyển sinh, học phí, học bổng và cuộc sống sinh viên.`
+      : `A bilingual AI assistant by ${t.clubFullName}. Explore admissions, tuition, scholarships, and student life.`;
+    for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]'])
+      document.querySelector(selector)?.setAttribute("content", description);
+    for (const selector of ['meta[property="og:title"]', 'meta[name="twitter:title"]'])
+      document.querySelector(selector)?.setAttribute("content", document.title);
+    document.querySelector('meta[property="og:locale"]')?.setAttribute("content", language === "vi" ? "vi_VN" : "en_US");
     try {
       localStorage.setItem("dav.theme.v4", theme);
       localStorage.setItem("dav.language.v4", language);
@@ -127,7 +138,7 @@ export function DavWorkspace() {
       /* A storage error must not prevent theme or language changes. */
     }
     return () => media.removeEventListener("change", apply);
-  }, [theme, language, ready]);
+  }, [theme, language, ready, t.clubFullName]);
   useEffect(() => {
     if (error) setToast(t.storageError);
   }, [error, t.storageError]);
@@ -360,6 +371,7 @@ export function DavWorkspace() {
           }}
           onTopics={() => openTopics()}
           onEcosystem={() => setEcosystemOpen(true)}
+          ecosystemOpen={ecosystemOpen}
           notice={setToast}
         />
         <main
@@ -370,8 +382,6 @@ export function DavWorkspace() {
             <div className="connection-chip" title={t.connectionNote}>
               <span className={online ? "status-dot" : "status-dot offline"} />
               {online ? t.online : t.offline}
-              <span className="toolbar-divider" />
-              <span className="connection-demo">{t.demo}</span>
               {!online && (
                 <button
                   className="icon-button"

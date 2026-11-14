@@ -134,7 +134,7 @@ svg {
   color: var(--muted);
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
   letter-spacing: 0.16em;
   color: var(--accent-text);
@@ -201,7 +201,7 @@ svg {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 550;
   color: var(--accent-text);
   padding: 8px;
@@ -435,7 +435,7 @@ svg {
 .brand small {
   display: block;
   color: var(--header-muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -474,7 +474,7 @@ svg {
 }
 .header-nav button {
   position: relative;
-  font-size: 11px;
+  font-size: 13px;
   padding: 8px 11px;
   color: var(--header-muted);
   border-radius: 9px;
@@ -507,7 +507,7 @@ svg {
   justify-content: center;
   gap: 7px;
   white-space: nowrap;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   min-height: 37px;
   padding: 9px 11px;
@@ -539,7 +539,7 @@ svg {
   height: 28px;
   border-radius: 8px;
   color: #b5c6e2;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 }
 .language-switch button > span:not(.segment-thumb) {
@@ -583,17 +583,6 @@ svg {
 .mobile-more {
   display: none;
 }
-.scroll-progress {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: -1px;
-  height: 2px;
-  transform-origin: left;
-  background: var(--grad-brand);
-  box-shadow: 0 0 8px #4cb7ff80;
-  border-radius: 4px;
-}
 .main-content {
   max-width: 1030px;
   margin: auto;
@@ -605,7 +594,7 @@ svg {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--muted);
 }
 .connection-chip {
@@ -617,7 +606,7 @@ svg {
   border: 1px solid var(--border);
   border-radius: 100px;
   background: var(--surface);
-  font-size: 9px;
+  font-size: 13px;
 }
 .status-dot {
   width: 5px;
@@ -636,14 +625,11 @@ svg {
   background: var(--border);
   margin: 0 2px;
 }
-.connection-demo {
-  color: var(--subtle);
-}
 .history-shortcut {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--muted);
   padding: 5px 0 5px 9px;
 }
@@ -717,7 +703,7 @@ svg {
   box-shadow: 0 0 24px #5cafff20;
 }
 .hero-eyebrow {
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.2em;
   color: var(--accent-text);
   margin: 0 0 15px;
@@ -772,7 +758,7 @@ svg {
   justify-content: space-between;
   margin: 0 2px 13px;
   color: var(--subtle);
-  font-size: 8px;
+  font-size: 13px;
   letter-spacing: 0.13em;
   font-weight: 600;
   gap: 8px;
@@ -787,7 +773,7 @@ svg {
   font-size: 16px;
 }
 .suggestion-hint {
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0;
   font-weight: 400;
   color: var(--subtle);
@@ -915,7 +901,7 @@ svg {
   padding: 12px 16px;
   min-height: 44px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
   white-space: nowrap;
   isolation: isolate;
@@ -1048,43 +1034,6 @@ svg {
     inset 0 1px 0 #e1efff0a;
   transition: box-shadow 0.3s;
 }
-.composer-border {
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1.5px;
-  overflow: hidden;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.3;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.composer-border:before {
-  content: "";
-  position: absolute;
-  width: 110%;
-  aspect-ratio: 1;
-  top: 50%;
-  left: 50%;
-  background: conic-gradient(
-    var(--blue),
-    var(--sky) 42%,
-    var(--blue) 70%,
-    var(--red) 84%,
-    var(--blue)
-  );
-  animation: conic-spin 9s linear infinite;
-  animation-play-state: paused;
-}
-.composer-shell:focus-within .composer-border {
-  opacity: 1;
-}
-.composer-shell:focus-within .composer-border:before {
-  animation-play-state: running;
-}
 .composer-shell:focus-within {
   box-shadow:
     var(--glass-shadow),
@@ -1118,7 +1067,7 @@ svg {
   border: 1px solid var(--border);
   padding: 0 6px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
   font-family: inherit;
 }
@@ -1167,29 +1116,18 @@ svg {
   align-items: center;
   gap: 12px;
   padding: 0 19px 10px 61px;
-  font-size: 8px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .hint-divider {
   margin: 0 6px;
-}
-.demo-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.demo-label > span {
-  height: 4px;
-  width: 4px;
-  background: #df7396;
-  border-radius: 50%;
 }
 .disclaimer {
   display: flex;
   justify-content: center;
   align-items: baseline;
   gap: 7px;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--subtle);
   margin: 13px 0 0;
   flex-wrap: wrap;
@@ -1223,7 +1161,7 @@ svg {
   border-radius: 14px;
   padding: 17px;
   text-align: left;
-  font-size: 11px;
+  font-size: 13px;
 }
 .details-tooltip > div a {
   display: block;
@@ -1247,7 +1185,7 @@ svg {
   padding: 3px 6px;
   max-width: 100%;
   overflow: hidden;
-  font-size: 10px;
+  font-size: 13px;
 }
 .attached-files button {
   display: flex;
@@ -1275,7 +1213,7 @@ svg {
 }
 .discovery-heading > p:last-child {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 10px;
 }
 .feature-grid {
@@ -1306,7 +1244,7 @@ svg {
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--subtle);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
@@ -1318,7 +1256,7 @@ svg {
   font-weight: 700;
 }
 .feature-card p {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   max-width: 200px;
   line-height: 1.9;
@@ -1366,13 +1304,13 @@ svg {
   margin-bottom: 7px;
 }
 .ecosystem-teaser p {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .ecosystem-teaser .primary-button {
   margin-left: auto;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: 13px;
   padding: 11px 15px;
 }
 .site-footer {
@@ -1384,7 +1322,7 @@ svg {
   justify-content: space-between;
   gap: 16px;
   color: var(--subtle);
-  font-size: 8px;
+  font-size: 13px;
 }
 .glass-modal {
   color: var(--text);
@@ -1445,7 +1383,7 @@ svg {
   margin-bottom: 9px;
 }
 .ecosystem-modal > .muted {
-  font-size: 12px;
+  font-size: 13px;
 }
 .ecosystem-grid {
   display: grid;
@@ -1481,7 +1419,7 @@ svg {
   margin: 16px 0 7px;
 }
 .ecosystem-card p {
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
   color: var(--muted);
   padding-right: 10px;
@@ -1489,7 +1427,7 @@ svg {
 .badge {
   padding: 3px 6px;
   border-radius: 20px;
-  font-size: 7px;
+  font-size: 13px;
   border: 1px solid var(--border);
   color: var(--subtle);
   white-space: nowrap;
@@ -1556,7 +1494,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 12px;
+  font-size: 13px;
   text-align: left;
   color: var(--text);
   padding: 12px 10px;
@@ -1605,7 +1543,7 @@ svg {
 }
 .new-chat {
   width: 100%;
-  font-size: 12px;
+  font-size: 13px;
   flex-shrink: 0;
 }
 .history-search {
@@ -1624,7 +1562,7 @@ svg {
   width: 100%;
   border: 0;
   color: var(--text);
-  font-size: 11px;
+  font-size: 13px;
 }
 .history-search input::placeholder {
   color: var(--muted);
@@ -1655,12 +1593,12 @@ svg {
   color: var(--text);
 }
 .history-empty p {
-  font-size: 11px;
+  font-size: 13px;
 }
 .history-group {
   font-family: var(--font-body);
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.03em;
   margin: 15px 8px 8px;
 }
@@ -1697,7 +1635,7 @@ svg {
   gap: 8px;
   width: 100%;
   text-align: left;
-  font-size: 11px;
+  font-size: 13px;
   padding: 5px;
 }
 .history-select > span {
@@ -1726,13 +1664,13 @@ svg {
   border-radius: 7px;
   padding: 7px;
   width: 100%;
-  font-size: 12px;
+  font-size: 13px;
 }
 .history-item form > div {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  font-size: 11px;
+  font-size: 13px;
   margin-top: 5px;
 }
 .history-item form button {
@@ -1746,7 +1684,7 @@ svg {
   padding-top: 15px;
   margin-top: 10px;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 13px;
   color: var(--subtle);
   flex-shrink: 0;
 }
@@ -1756,7 +1694,7 @@ svg {
   gap: 5px;
 }
 .history-footer .text-button {
-  font-size: 9px;
+  font-size: 13px;
 }
 .history-skeleton {
   display: flex;
@@ -1786,7 +1724,7 @@ svg {
   font-size: 13px;
 }
 .delete-confirm p {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-top: 8px;
 }
@@ -1795,7 +1733,7 @@ svg {
   justify-content: flex-end;
   gap: 8px;
   margin-top: 14px;
-  font-size: 11px;
+  font-size: 13px;
 }
 .conversation-heading {
   display: flex;
@@ -1812,7 +1750,7 @@ svg {
 }
 .conversation-heading .text-button {
   white-space: nowrap;
-  font-size: 10px;
+  font-size: 13px;
 }
 .message-container {
   position: relative;
@@ -1841,7 +1779,7 @@ svg {
   height: 28px;
 }
 .message-avatar > span:not(.dav-logo) {
-  font-size: 9px;
+  font-size: 13px;
   padding: 8px;
   background: var(--surface-hover);
   border-radius: 10px;
@@ -1855,24 +1793,16 @@ svg {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 9px;
-}
-.message-demo {
-  font-size: 8px;
-  font-weight: 400;
-  color: var(--subtle);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 1px 5px;
 }
 .message-bubble {
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 2px 16px 16px 16px;
   padding: 16px 20px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.9;
   overflow-wrap: anywhere;
 }
@@ -1895,7 +1825,7 @@ svg {
 .message-bubble table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 11px;
+  font-size: 13px;
 }
 .message-bubble th,
 .message-bubble td {
@@ -1923,7 +1853,7 @@ svg {
   align-items: center;
   gap: 8px;
   margin-top: 11px;
-  font-size: 8px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .source-chips a {
@@ -1973,7 +1903,7 @@ svg {
   border: 1px solid var(--border-strong);
   background: var(--surface-solid);
   border-radius: 30px;
-  font-size: 10px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -1996,7 +1926,7 @@ svg {
   border: 1px solid var(--border-strong);
   border-radius: 14px;
   box-shadow: var(--shadow);
-  font-size: 12px;
+  font-size: 13px;
   width: max-content;
   max-width: calc(100vw - 32px);
 }
@@ -2109,7 +2039,7 @@ svg {
     font-size: 14px;
   }
   .section-kicker {
-    font-size: 9px;
+    font-size: 13px;
   }
   .suggestion-card {
     min-height: 94px;
@@ -2119,13 +2049,13 @@ svg {
     font-size: 13px;
   }
   .topic-tabs button {
-    font-size: 11px;
+    font-size: 13px;
   }
   .composer textarea {
     font-size: 14px;
   }
   .disclaimer {
-    font-size: 9px;
+    font-size: 13px;
   }
   .workspace-toolbar {
     margin-bottom: 10px;
@@ -2147,7 +2077,7 @@ svg {
     padding: 8px 10px;
   }
   .brand small {
-    font-size: 9px;
+    font-size: 13px;
   }
   .glass-header {
     gap: 16px;
@@ -2204,7 +2134,7 @@ svg {
     border-radius: 30px;
   }
   .hero-eyebrow {
-    font-size: 8px;
+    font-size: 13px;
   }
   .ecosystem-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2213,13 +2143,13 @@ svg {
     min-height: 160px;
   }
   .ecosystem-card p {
-    font-size: 11px;
+    font-size: 13px;
   }
   .badge {
-    font-size: 8px;
+    font-size: 13px;
   }
   .suggestion-hint {
-    font-size: 8px;
+    font-size: 13px;
   }
 }
 @media (max-width: 767px) {
@@ -2242,7 +2172,7 @@ svg {
     font-size: 16px;
   }
   .brand small {
-    font-size: 8px;
+    font-size: 13px;
   }
   .dav-logo {
     width: 36px;
@@ -2280,11 +2210,11 @@ svg {
     margin-bottom: 10px;
   }
   .connection-chip {
-    font-size: 8px;
+    font-size: 13px;
     padding: 5px 8px;
   }
   .history-shortcut {
-    font-size: 9px;
+    font-size: 13px;
     gap: 5px;
   }
   .welcome-hero {
@@ -2311,17 +2241,17 @@ svg {
     min-height: 120px;
   }
   .hero-eyebrow {
-    font-size: 7px;
+    font-size: 13px;
     letter-spacing: 0.15em;
     margin-bottom: 13px;
   }
   .hero-copy {
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.9;
     margin-top: 15px;
   }
   .section-kicker {
-    font-size: 7px;
+    font-size: 13px;
     letter-spacing: 0.09em;
     margin-bottom: 11px;
   }
@@ -2339,7 +2269,7 @@ svg {
     border-radius: 13px;
   }
   .suggestion-text {
-    font-size: 12px;
+    font-size: 13px;
   }
   .icon-tile {
     width: 41px;
@@ -2347,7 +2277,7 @@ svg {
     border-radius: 12px;
   }
   .topic-tabs button {
-    font-size: 10px;
+    font-size: 13px;
     padding: 8px 11px;
   }
   .composer {
@@ -2355,7 +2285,7 @@ svg {
     padding: 11px 10px 7px;
   }
   .composer textarea {
-    font-size: 12px;
+    font-size: 13px;
   }
   .composer-shortcut {
     display: none;
@@ -2369,7 +2299,7 @@ svg {
     border-radius: 11px;
   }
   .composer-hints {
-    font-size: 7px;
+    font-size: 13px;
     padding: 0 12px 10px 45px;
   }
   .composer-hints .hint-divider,
@@ -2380,7 +2310,7 @@ svg {
     justify-content: flex-end;
   }
   .disclaimer {
-    font-size: 8px;
+    font-size: 13px;
     line-height: 1.9;
     gap: 4px;
     padding: 0 5px;
@@ -2397,10 +2327,10 @@ svg {
     margin: auto;
   }
   .discovery-heading .eyebrow {
-    font-size: 8px;
+    font-size: 13px;
   }
   .discovery-heading > p:last-child {
-    font-size: 11px;
+    font-size: 13px;
   }
   .feature-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2411,16 +2341,16 @@ svg {
     min-height: 200px;
   }
   .feature-card h3 {
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 16px;
   }
   .feature-card p {
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.9;
   }
   .feature-number {
     right: 13px;
-    font-size: 8px;
+    font-size: 13px;
   }
   .ecosystem-teaser {
     flex-wrap: wrap;
@@ -2448,7 +2378,7 @@ svg {
     text-align: center;
     gap: 7px;
     margin-top: 35px;
-    font-size: 8px;
+    font-size: 13px;
   }
   .more-menu {
     top: 10px;
@@ -2483,14 +2413,14 @@ svg {
     gap: 9px;
   }
   .ecosystem-card h4 {
-    font-size: 11px;
+    font-size: 13px;
     margin-top: 12px;
   }
   .ecosystem-card p {
-    font-size: 9px;
+    font-size: 13px;
   }
   .ecosystem-card .badge {
-    font-size: 7px;
+    font-size: 13px;
   }
   .history-actions {
     opacity: 1;
@@ -2506,7 +2436,7 @@ svg {
   }
   .message-bubble {
     padding: 12px;
-    font-size: 12px;
+    font-size: 13px;
   }
   .message-avatar {
     display: none;
@@ -2526,13 +2456,10 @@ svg {
     margin-bottom: 22px;
   }
   .message-author {
-    font-size: 9px;
-  }
-  .message-demo {
-    font-size: 7px;
+    font-size: 13px;
   }
   .toast {
-    font-size: 11px;
+    font-size: 13px;
     gap: 7px;
     padding: 12px;
   }
@@ -2561,7 +2488,7 @@ svg {
     padding-right: 17px;
   }
   .brand small {
-    font-size: 7px;
+    font-size: 13px;
   }
   .brand strong {
     font-size: 15px;
@@ -2579,7 +2506,6 @@ svg {
   .welcome-hero h1 {
     font-size: 28px;
   }
-  .connection-demo,
   .toolbar-divider {
     display: none;
   }
@@ -2591,7 +2517,7 @@ svg {
     height: 36px;
   }
   .feature-card p {
-    font-size: 10px;
+    font-size: 13px;
   }
   .ecosystem-teaser {
     padding: 20px;
@@ -2695,7 +2621,7 @@ svg {
   height: 40px;
 }
 .composer-hints {
-  font-size: 9px;
+  font-size: 13px;
   padding: 0 20px 14px 68px;
 }
 .send-button {
@@ -2729,7 +2655,7 @@ svg {
 }
 .disclaimer {
   position: relative;
-  font-size: 10px;
+  font-size: 13px;
   margin-top: 16px;
 }
 .details-trigger {
@@ -2762,7 +2688,7 @@ svg {
 }
 .topic-carousel .topic-tabs button {
   font-weight: 650;
-  font-size: 12px;
+  font-size: 13px;
   border-radius: 12px;
 }
 .topic-tabs button:hover {
@@ -2787,12 +2713,12 @@ svg {
   filter: drop-shadow(0 0 5px #2e7dff45);
 }
 .section-kicker {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.11em;
   margin-bottom: 14px;
 }
 .suggestion-hint {
-  font-size: 10px;
+  font-size: 13px;
   transition: opacity 0.3s;
 }
 .suggestion-card {
@@ -2842,7 +2768,7 @@ svg {
   transform: scale(0.97) !important;
 }
 .feature-card p {
-  font-size: 12px;
+  font-size: 13px;
 }
 .feature-number {
   opacity: 1;
@@ -2935,7 +2861,7 @@ svg {
   }
   .composer-hints {
     padding: 0 14px 12px;
-    font-size: 8px;
+    font-size: 13px;
     justify-content: center;
   }
   .composer-hints > span:first-child {
@@ -2944,11 +2870,8 @@ svg {
   .composer-hints .hint-divider {
     display: inline;
   }
-  .composer-hints .demo-label {
-    display: none;
-  }
   .disclaimer {
-    font-size: 9px;
+    font-size: 13px;
     line-height: 1.7;
     margin-top: 12px;
   }
@@ -2964,7 +2887,7 @@ svg {
   }
   .topic-carousel .topic-tabs button {
     padding: 10px 13px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .topic-arrow {
     top: 13px;
@@ -2973,17 +2896,17 @@ svg {
     margin-top: 32px;
   }
   .section-kicker {
-    font-size: 8px;
+    font-size: 13px;
     letter-spacing: 0.08em;
   }
   .suggestion-card {
     min-height: 80px;
   }
   .suggestion-text {
-    font-size: 12px;
+    font-size: 13px;
   }
   .feature-card p {
-    font-size: 11px;
+    font-size: 13px;
   }
   .feature-card {
     min-height: 215px;

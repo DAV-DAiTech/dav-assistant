@@ -31,7 +31,7 @@ export function TopicSuggestions({
   const reduced = useReducedMotion();
   const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabs = useRef<(HTMLButtonElement | HTMLAnchorElement | null)[]>([]);
   const momentum = useRef(0);
   const dragged = useRef(false);
   const drag = useRef<{
@@ -143,6 +143,21 @@ export function TopicSuggestions({
     });
     return () => cancelAnimationFrame(frame);
   }, [topic, language, reduced]);
+
+  function focusTopic(index: number) {
+    const node = viewport.current;
+    const tab = tabs.current[index];
+    if (!node || !tab) return;
+    tab.focus({ preventScroll: true });
+    const bounds = node.getBoundingClientRect();
+    const target = tab.getBoundingClientRect();
+    node.scrollTo({
+      left: getCenteredScroll(node.scrollLeft, bounds.left, node.clientWidth, target.left, target.width, node.scrollWidth),
+      behavior: reduced ? "instant" : "smooth",
+    });
+    // A destination receives roving focus without changing the selected question set.
+    if (!suggestions[index].url) setTopic(index);
+  }
 
   function startDrag(event: PointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
@@ -264,7 +279,36 @@ export function TopicSuggestions({
             aria-orientation="horizontal"
             ref={track}
           >
-            {suggestions.map((item, index) => (
+            {suggestions.map((item, index) => item.url ? (
+              <a
+                key={item.id}
+                ref={(node) => { tabs.current[index] = node; }}
+                className="topic-external-link"
+                href={item.url}
+                role="link"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t.openClubMatch}
+                title="DAV Club Match"
+                onDragStart={(event) => event.preventDefault()}
+                onKeyDown={(event) => {
+                  if (event.nativeEvent.isComposing || event.keyCode === 229) return;
+                  if (event.key === " ") {
+                    event.preventDefault();
+                    event.currentTarget.click();
+                    return;
+                  }
+                  const next = getTopicIndex(event.key, index, suggestions.length);
+                  if (next === null) return;
+                  event.preventDefault();
+                  focusTopic(next);
+                }}
+              >
+                <item.icon size={20} strokeWidth={2.25} />
+                <span>{item.label[language]}</span>
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            ) : (
               <button
                 key={item.id}
                 type="button"
@@ -285,8 +329,7 @@ export function TopicSuggestions({
                   );
                   if (next === null) return;
                   event.preventDefault();
-                  setTopic(next);
-                  tabs.current[next]?.focus({ preventScroll: true });
+                  focusTopic(next);
                 }}
               >
                 {topic === index && (
@@ -353,7 +396,7 @@ export function TopicSuggestions({
               },
             }}
           >
-            {current.questions[language].map((question, index) => (
+            {current.questions?.[language].map((question, index) => (
               <motion.div
                 key={question}
                 variants={{

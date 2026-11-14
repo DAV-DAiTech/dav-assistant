@@ -11,11 +11,13 @@ import {
   Newspaper,
 } from "lucide-react";
 import type { Bilingual, Language } from "./i18n";
+import { CLUB_MATCH_URL } from "./ecosystem";
 export const suggestions: {
   id: string;
   icon: typeof GraduationCap;
   label: Bilingual;
-  questions: Record<Language, string[]>;
+  questions?: Record<Language, string[]>;
+  url?: string;
 }[] = [
   {
     id: "admissions",
@@ -173,20 +175,7 @@ export const suggestions: {
     id: "clubs",
     icon: Users,
     label: { vi: "CLB · Đoàn · Hội", en: "Clubs & societies" },
-    questions: {
-      vi: [
-        "DAV có những câu lạc bộ nào?",
-        "Làm thế nào để tham gia CLB DAItech?",
-        "Hoạt động Đoàn và Hội có gì nổi bật?",
-        "Tân sinh viên có thể tham gia hoạt động nào?",
-      ],
-      en: [
-        "What clubs are available at DAV?",
-        "How can I join DAItech Club?",
-        "What do the student organizations offer?",
-        "Which activities can new students join?",
-      ],
-    },
+    url: CLUB_MATCH_URL,
   },
   {
     id: "news",

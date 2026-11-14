@@ -1,0 +1,94 @@
+/* Neon tokens for the header scroll-progress line.
+   Registered as <color> so theme switches cross-fade instead of snapping. */
+@property --progress-from { syntax: "<color>"; inherits: true; initial-value: #1E5BFF; }
+@property --progress-via { syntax: "<color>"; inherits: true; initial-value: #38BDF8; }
+@property --progress-to { syntax: "<color>"; inherits: true; initial-value: #8FD3FF; }
+@property --progress-glow { syntax: "<color>"; inherits: true; initial-value: rgba(30,91,255,0.55); }
+@property --progress-tip { syntax: "<color>"; inherits: true; initial-value: #E11D48; }
+
+:root {
+  --progress-from: #1E5BFF;
+  --progress-via: #38BDF8;
+  --progress-to: #8FD3FF;
+  --progress-glow: rgba(30,91,255,0.55);
+  --progress-tip: #E11D48;
+  transition:
+    --progress-from .3s, --progress-via .3s, --progress-to .3s, --progress-glow .3s, --progress-tip .3s;
+}
+:root[data-theme="dark"] {
+  --progress-from: #38E1FF;
+  --progress-via: #4C8DFF;
+  --progress-to: #7AA7FF;
+  --progress-glow: rgba(56,225,255,0.65);
+  --progress-tip: #FF4D6D;
+}
+
+/* ---------- Scroll progress (header bottom edge) ---------- */
+.glass-header { --header-radius: 26px; }
+.scroll-progress {
+  position: absolute;
+  left: var(--header-radius);
+  right: var(--header-radius);
+  bottom: -1px;
+  height: 3px;
+  z-index: 2; /* above header surface and nav row; header (z 30) stays below dialogs */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.scroll-progress[data-state="active"] { opacity: 1; }
+.scroll-progress[data-state="idle"] { opacity: .35; transition-duration: .6s; }
+.scroll-progress-track,
+.scroll-progress-bar {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--progress-from), var(--progress-via), var(--progress-to));
+}
+.scroll-progress-track { opacity: .12; }
+.scroll-progress-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+  box-shadow: 0 0 8px var(--progress-glow);
+  will-change: transform;
+}
+.scroll-progress-comet {
+  position: absolute;
+  inset: 0;
+  transform: translateX(0);
+  will-change: transform;
+}
+.scroll-progress-head {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 25%, var(--progress-via) 60%);
+  box-shadow:
+    0 0 10px 2px var(--progress-glow),
+    0 0 18px 4px var(--progress-glow),
+    2px 0 6px -1px color-mix(in srgb, var(--progress-tip) 12%, transparent);
+}
+.scroll-progress-head:before {
+  content: "";
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  width: 46px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--progress-via));
+  filter: blur(1px);
+  opacity: .8;
+}
+@media (max-width: 767px) {
+  .glass-header { --header-radius: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-comet { display: none; }
+  .scroll-progress, .scroll-progress-bar { transition: none; }
+}
