@@ -4,6 +4,9 @@
 
 English: **AI & Technology Club, Diplomatic Academy of Vietnam – DAiTech**.
 
+- Trang chính: https://v0-dav-assistant-uiux.vercel.app
+- Poster QR in cho gian hàng (A4): (Đang update)
+
 DAV Assistant do CLB DAiTech phát triển. Câu trả lời có thể chưa đầy đủ, vui lòng đối chiếu tại dav.edu.vn.
 
 ## Giao diện v6
