@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUp, FileText, Info, Mic, Plus, Square, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUp, ArrowUpRight, FileText, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
+import { RgbBorderComposer } from "./rgb-border-composer";
+import { ContactPopover } from "./contact-popover";
 export function Composer({
   language,
   streaming,
@@ -21,7 +23,6 @@ export function Composer({
   const t = text[language];
   const reduced = useReducedMotion();
   const area = useRef<HTMLDivElement>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
   useEffect(() => {
     const node = area.current;
     if (!node || !docked) return;
@@ -48,23 +49,11 @@ export function Composer({
       document.documentElement.style.removeProperty("--dock-height");
     };
   }, [docked]);
-  useEffect(() => {
-    if (!detailsOpen) return;
-    const close = (event: globalThis.PointerEvent) => {
-      if (!(event.target as HTMLElement).closest(".details-tooltip"))
-        setDetailsOpen(false);
-    };
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDetailsOpen(false);
-    };
-    document.addEventListener("pointerdown", close);
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("pointerdown", close);
-      document.removeEventListener("keydown", escape);
-    };
-  }, [detailsOpen]);
+
   const [input, setInput] = useState("");
+  const [focused, setFocused] = useState(false);
+  const [activity, setActivity] = useState(0);
+  const [pulse, setPulse] = useState(0);
   const [files, setFiles] = useState<string[]>([]);
   const [micActive, setMicActive] = useState(false);
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -101,6 +90,7 @@ export function Composer({
   function submit() {
     if (!input.trim() || streaming) return;
     send(input.trim());
+    setPulse((n) => n + 1);
     setInput("");
     setFiles([]);
   }
@@ -115,8 +105,21 @@ export function Composer({
         layout: { duration: reduced ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] },
       }}
     >
-      <div className="composer-shell">
-        <span className="composer-border" aria-hidden="true" />
+      <div
+        className="composer-shell"
+        data-focused={focused}
+        data-has-text={Boolean(input)}
+        onClick={(event) => {
+          if (!(event.target as HTMLElement).closest("button, input, textarea, a"))
+            textarea.current?.focus();
+        }}
+        onFocus={() => setFocused(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+            setFocused(false);
+        }}
+      >
+        <RgbBorderComposer focused={focused} activity={activity} pulse={pulse} />
         {files.length > 0 && (
           <div className="attached-files">
             {files.map((name, i) => (
@@ -174,7 +177,10 @@ export function Composer({
             data-lenis-prevent
             aria-describedby="composer-hints"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setActivity((n) => n + 1);
+            }}
             aria-label={t.placeholder}
             placeholder={t.placeholder}
             rows={1}
@@ -230,48 +236,16 @@ export function Composer({
             <span className="hint-divider">·</span>
             {t.shiftEnter}
           </span>
-          <span className="demo-label">
-            <span />
-            {t.demo}
-          </span>
         </div>
       </div>
       <div className="disclaimer">
         <span>
           {t.disclaimer}{" "}
-          <a href="https://dav.edu.vn" target="_blank" rel="noreferrer">
-            dav.edu.vn
-          </a>
+          <a href="https://dav.edu.vn" target="_blank" rel="noopener noreferrer">
+            dav.edu.vn<ArrowUpRight size={13} aria-hidden="true" />
+          </a>.
         </span>
-        <div className="details-tooltip">
-          <button
-            type="button"
-            className="details-trigger"
-            aria-expanded={detailsOpen}
-            aria-controls="composer-details"
-            onClick={() => setDetailsOpen(!detailsOpen)}
-          >
-            <Info size={13} />
-            {t.details}
-          </button>
-          <AnimatePresence>
-            {detailsOpen && (
-              <motion.div
-                id="composer-details"
-                role="note"
-                initial={{ opacity: 0, y: reduced ? 0 : 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduced ? 0 : 4 }}
-                transition={{ duration: reduced ? 0 : 0.25 }}
-              >
-                <strong>{t.hotline}</strong>
-                <a href="tel:0943482840">0943.482.840</a>
-                <a href="tel:0936018433">0936.018.433</a>
-                <p>{t.privacy}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <ContactPopover language={language} />
       </div>
     </motion.div>
   );

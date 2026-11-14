@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   ChevronDown,
@@ -17,8 +17,8 @@ import {
   Sun,
 } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
-import { ecosystem } from "@/lib/frontend/ecosystem";
 import { Logo, Modal } from "./primitives";
+import { ScrollProgress } from "./scroll-progress";
 export type Theme = "light" | "dark" | "system";
 type Props = {
   language: Language;
@@ -29,6 +29,7 @@ type Props = {
   onChat: () => void;
   onTopics: () => void;
   onEcosystem: () => void;
+  ecosystemOpen: boolean;
   active: string;
   notice: (s: string) => void;
 };
@@ -68,8 +69,9 @@ export function Header(p: Props) {
   }, []);
   const [menu, setMenu] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
-  const { scrollYProgress, scrollY } = useScroll();
+  const { scrollY } = useScroll();
   const headerScale = useTransform(scrollY, [0, 180], [1, 0.985]);
+  const reduced = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => scrollY.on("change", (y) => setScrolled(y > 30)), [scrollY]);
   const nav = [
@@ -150,7 +152,7 @@ export function Header(p: Props) {
       <motion.header
         ref={header}
         className={`glass-header ${scrolled ? "is-scrolled" : ""}`}
-        style={{ scale: headerScale }}
+        style={{ scale: reduced ? 1 : headerScale }}
       >
         <a
           className="brand"
@@ -190,10 +192,12 @@ export function Header(p: Props) {
             className="ecosystem-button"
             onClick={p.onEcosystem}
             aria-haspopup="dialog"
+            aria-expanded={p.ecosystemOpen}
+            aria-label={t.ecosystem}
             title={t.ecosystem}
           >
-            <Grid2X2 size={17} />
-            <span>{t.ecosystem}</span>
+            <span className="ecosystem-grid-icon" aria-hidden="true"><i /><i /><i /><i /></span>
+            <span className="ecosystem-button-label">{t.ecosystem}</span>
             <ChevronDown className="ecosystem-chevron" size={13} />
           </button>
           <div className="desktop-controls">{!menu && controls}</div>
@@ -207,10 +211,7 @@ export function Header(p: Props) {
             <Menu className="mobile-more" size={21} />
           </button>
         </div>
-        <motion.div
-          className="scroll-progress"
-          style={{ scaleX: scrollYProgress }}
-        />
+        <ScrollProgress />
       </motion.header>
       {menu && (
         <Modal
@@ -236,7 +237,7 @@ export function Header(p: Props) {
             ))}
           </nav>
           <div className="menu-links">
-            <a href="https://dav.edu.vn" target="_blank" rel="noreferrer">
+            <a href="https://dav.edu.vn" target="_blank" rel="noopener noreferrer">
               <Globe2 size={19} />
               {t.site}
               <ArrowUpRight size={16} />
@@ -268,59 +269,5 @@ export function Header(p: Props) {
         </Modal>
       )}
     </>
-  );
-}
-export function EcosystemMenu({
-  language,
-  onClose,
-}: {
-  language: Language;
-  onClose: () => void;
-}) {
-  const t = text[language];
-  return (
-    <Modal
-      title={t.ecosystem}
-      closeLabel={t.close}
-      onClose={onClose}
-      className="ecosystem-modal"
-    >
-      <p className="eyebrow">DAItech × DAV</p>
-      <h3 className="ecosystem-heading">{t.ecosystemIntro}</h3>
-      <p className="muted">{t.ecosystemCopy}</p>
-      <div className="ecosystem-grid">
-        {ecosystem.map((item, i) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
-            className="ecosystem-card"
-          >
-            <div className="ecosystem-card-top">
-              <span className="icon-tile">
-                <item.icon size={23} />
-              </span>
-              <span className={`badge ${item.status}`}>{t[item.status]}</span>
-            </div>
-            <h4>{item.label[language]}</h4>
-            <p>{item.description[language]}</p>
-            {item.url ? (
-              <button
-                className="card-link"
-                onClick={onClose}
-                aria-label={item.label[language]}
-              >
-                <ArrowUpRight size={19} />
-              </button>
-            ) : (
-              <span className="card-arrow" aria-hidden="true">
-                <ArrowUpRight size={19} />
-              </span>
-            )}
-          </motion.div>
-        ))}
-      </div>
-    </Modal>
   );
 }

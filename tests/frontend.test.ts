@@ -6,6 +6,65 @@ import { sendMessage as mockSendMessage } from "../lib/chatbot/mockAdapter";
 import { text, headlines, featureDescriptions } from "../lib/frontend/i18n";
 import { suggestions } from "../lib/frontend/suggestions";
 import { ecosystem } from "../lib/frontend/ecosystem";
+import { getContactPosition } from "../lib/frontend/contact-position";
+
+test("both composer layouts share the RGB border without changing send/history wiring", () => {
+  const composer = readFileSync(new URL("../components/dav/composer.tsx", import.meta.url), "utf8");
+  const workspace = readFileSync(new URL("../components/dav/workspace.tsx", import.meta.url), "utf8");
+  assert.equal((workspace.match(/<Composer\s/g) ?? []).length, 1);
+  assert.match(workspace, /docked=\{Boolean\(active\)\}/);
+  assert.equal((composer.match(/<RgbBorderComposer\s/g) ?? []).length, 1);
+  assert.match(composer, /<ContactPopover language=\{language\}/);
+  assert.doesNotMatch(composer, /BorderBeam|details-tooltip/);
+  assert.match(composer, /send\(input\.trim\(\)\)/);
+  assert.match(composer, /e\.nativeEvent\.isComposing \|\| e\.keyCode === 229/);
+});
+
+test("composer internals remain frameless while the outer RGB focus band is retained", () => {
+  const css = readFileSync(new URL("../app/composer.css", import.meta.url), "utf8");
+  const reset = css.match(/\.composer-shell :is\(\.composer, \.composer-hints, textarea, input\) \{([^}]+)\}/)![1];
+  for (const declaration of ["outline: none !important", "box-shadow: none !important", "border: 0 !important", "background: transparent !important"])
+    assert.ok(reset.includes(declaration));
+  assert.doesNotMatch(css, /\.composer textarea:focus-visible/);
+  assert.match(css, /\.rgb-border\[data-focused="true"\] \.rgb-border-core/);
+});
+
+test("contact panel has three rows and two independent hotline links", () => {
+  const panel = readFileSync(new URL("../components/dav/contact-popover.tsx", import.meta.url), "utf8");
+  assert.equal((panel.match(/<ContactRow index=/g) ?? []).length, 2);
+  assert.equal((panel.match(/className="contact-row contact-hotline"/g) ?? []).length, 1);
+  for (const phone of ["0943482840", "0936018433"])
+    assert.equal((panel.match(new RegExp(`href="tel:${phone}"`, "g")) ?? []).length, 1);
+  assert.doesNotMatch(panel, /ShieldCheck|Users|personalInformation|t\.privacy|t\.clubFullName|<hr|contact-popover-scroll/);
+  for (const language of ["vi", "en"] as const) {
+    assert.equal("personalInformation" in text[language], false);
+    assert.equal("privacy" in text[language], false);
+    assert.ok(text[language].footer.includes(text[language].clubFullName));
+  }
+});
+
+test("contact panel stays within each viewport and flips near the top", () => {
+  for (const width of [360, 768, 1280, 1920]) {
+    const panelWidth = width < 480 ? width * .92 : 360;
+    for (const left of [12, width / 2, width - 120]) {
+      const position = getContactPosition({ left, top: 700, bottom: 732, width: 100 }, panelWidth, 420, width, 900);
+      assert.equal(position.side, "top");
+      assert.ok(position.left >= 12);
+      assert.ok(position.left + panelWidth <= width - 12);
+      assert.ok(position.top >= 12);
+      assert.ok(position.arrow >= 24 && position.arrow <= panelWidth - 24);
+    }
+    const flipped = getContactPosition({ left: 40, top: 20, bottom: 52, width: 100 }, panelWidth, 420, width, 900);
+    assert.equal(flipped.side, "bottom");
+    assert.equal(flipped.top, 64);
+  }
+});
+
+test("contact panel limits height on short screens", () => {
+  const position = getContactPosition({ left: 30, top: 220, bottom: 252, width: 100 }, 331, 420, 360, 400);
+  assert.equal(position.maxHeight, 196);
+  assert.equal(position.top, 12);
+});
 import {
   getCenteredScroll,
   getScrollMetrics,
@@ -84,18 +143,44 @@ test("both languages have identical UI keys and three matching headline slots", 
     assert.equal(featureDescriptions[language].length, 6);
   }
 });
-test("all ten topics provide four prompts per language and unique IDs", () => {
+test("nine question sets and one direct link retain all ten topic positions", () => {
   assert.equal(suggestions.length, 10);
   assert.equal(new Set(suggestions.map((topic) => topic.id)).size, 10);
-  for (const topic of suggestions)
+  const clubs = suggestions[8];
+  assert.equal(clubs.id, "clubs");
+  assert.equal(clubs.url, "https://dav-club-match.vercel.app/");
+  assert.equal(clubs.questions, undefined);
+  assert.equal(suggestions.filter((topic) => topic.questions).length, 9);
+  for (const topic of suggestions.filter((topic) => !topic.url))
     for (const lang of ["vi", "en"] as const) {
-      assert.equal(topic.questions[lang].length, 4);
-      assert.equal(new Set(topic.questions[lang]).size, 4);
+      assert.equal(topic.questions![lang].length, 4);
+      assert.equal(new Set(topic.questions![lang]).size, 4);
       assert.ok(topic.label[lang].length > 0);
     }
 });
+test("presentation dictionaries contain responsible attribution and no retired wording", () => {
+  const retired = /thử nghiệm|trải nghiệm|experimental|demo|mock|minh họa|beta/i;
+  for (const language of ["vi", "en"] as const) {
+    assert.doesNotMatch(JSON.stringify(text[language]), retired);
+    assert.ok(text[language].clubFullName.endsWith("– DAiTech"));
+    assert.ok(text[language].footer.includes(text[language].clubFullName));
+  }
+  assert.equal(text.vi.offline, "Mất kết nối");
+});
+
+test("first visit is light and preserves the system preference option", () => {
+  const layout = readFileSync(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  assert.ok(layout.includes("||'light'"));
+  assert.ok(layout.includes('data-ombre="blue-white"'));
+  assert.ok(layout.includes("t==='system'"));
+});
+
 test("ecosystem has eight bilingual entries and no guessed live destinations", () => {
   assert.equal(ecosystem.length, 8);
+  assert.deepEqual(ecosystem.slice(0, 2).map((item) => item.id), ["assistant", "club-match"]);
+  assert.equal(ecosystem[1].url, suggestions[8].url);
+  assert.equal(ecosystem[1].external, true);
+  assert.equal(ecosystem.filter((item) => item.status === "live").length, 2);
   for (const item of ecosystem) {
     assert.ok(
       item.label.vi &&

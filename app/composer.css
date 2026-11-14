@@ -1,0 +1,227 @@
+@property --rgb-angle { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+@property --rgb-hue { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --rgb-s { syntax: "<percentage>"; inherits: true; initial-value: 92%; }
+@property --rgb-l { syntax: "<percentage>"; inherits: true; initial-value: 52%; }
+
+/* These local tokens leave the existing header/progress theme untouched. */
+.composer-shell {
+  --rgb-s: 92%;
+  --rgb-l: 52%;
+  --rgb-glow-opacity: .45;
+  --composer-radius: 25px;
+  overflow: visible;
+  border-radius: var(--composer-radius);
+  background: linear-gradient(125deg, var(--surface-solid), var(--surface)) padding-box,
+    linear-gradient(var(--surface-solid), var(--surface-solid)) border-box;
+  transition: box-shadow .3s, --rgb-s .3s, --rgb-l .3s;
+}
+:root[data-theme="dark"] .composer-shell {
+  --rgb-s: 100%;
+  --rgb-l: 64%;
+  --rgb-glow-opacity: .65;
+}
+/* The masked overlay replaces the old border without changing the glass fill. */
+.composer-shell:focus-within { outline: none; }
+.composer-shell > :not(.rgb-border) { position: relative; z-index: 1; }
+/* The shared outer RGB band provides the composer's focus indicator. */
+.composer-shell :is(.composer, .composer-hints, textarea, input) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.composer button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.rgb-border {
+  --rgb-angle: 0deg;
+  --rgb-hue: 0;
+  --rgb-width: 2px;
+  --rgb-band: conic-gradient(from var(--rgb-angle),
+    hsl(calc(var(--rgb-hue) + 0) var(--rgb-s) var(--rgb-l)) 0%,
+    hsl(calc(var(--rgb-hue) + 30) var(--rgb-s) var(--rgb-l)) 7%,
+    hsl(calc(var(--rgb-hue) + 60) var(--rgb-s) var(--rgb-l)) 14%,
+    hsl(calc(var(--rgb-hue) + 120) var(--rgb-s) var(--rgb-l)) 23%,
+    hsl(calc(var(--rgb-hue) + 180) var(--rgb-s) var(--rgb-l)) 34%,
+    hsl(calc(var(--rgb-hue) + 195) var(--rgb-s) var(--rgb-l)) 45%,
+    hsl(calc(var(--rgb-hue) + 210) var(--rgb-s) var(--rgb-l)) 56%,
+    hsl(calc(var(--rgb-hue) + 240) var(--rgb-s) var(--rgb-l)) 68%,
+    hsl(calc(var(--rgb-hue) + 270) var(--rgb-s) var(--rgb-l)) 79%,
+    hsl(calc(var(--rgb-hue) + 300) var(--rgb-s) var(--rgb-l)) 90%,
+    hsl(calc(var(--rgb-hue) + 360) var(--rgb-s) var(--rgb-l)) 100%);
+  position: absolute;
+  inset: -2px;
+  z-index: 0;
+  border-radius: calc(var(--composer-radius) + 2px);
+  pointer-events: none;
+}
+.rgb-border[data-registered="true"] { animation: rgb-orbit 3.2s linear infinite, rgb-drift 10s linear infinite; }
+.rgb-border[data-running="false"] { animation-play-state: paused; }
+.rgb-border-ring, .rgb-border-glow, .rgb-border-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.rgb-border-ring {
+  padding: var(--rgb-width);
+  background: var(--rgb-band);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.rgb-border-core, .rgb-border-glow { opacity: 0; transition: opacity .35s; }
+.rgb-border-glow, .rgb-border-pulse { filter: blur(10px); }
+.composer-shell[data-has-text="true"] .rgb-border[data-focused="false"] .rgb-border-core { opacity: .18; }
+.rgb-border[data-focused="true"] .rgb-border-core { opacity: .85; }
+.rgb-border[data-focused="true"] .rgb-border-glow { opacity: var(--rgb-glow-opacity); }
+.rgb-border[data-typing="true"] { --rgb-width: 3px; }
+.rgb-border[data-typing="true"] .rgb-border-core { opacity: 1; }
+.rgb-border[data-typing="true"] .rgb-border-glow { opacity: .8; }
+.rgb-border-pulse { animation: rgb-send .4s ease-out both; }
+.rgb-border[data-running="false"] .rgb-border-pulse { animation-play-state: paused; }
+@keyframes rgb-orbit { to { --rgb-angle: 360deg; } }
+@keyframes rgb-drift { to { --rgb-hue: 360; } }
+@keyframes rgb-send { 0%, 100% { opacity: 0; } 35% { opacity: 1; } }
+
+/* One alignment context for the sentence and the 32px details pill. */
+.composer-area .disclaimer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  row-gap: 6px;
+  flex-wrap: wrap;
+  padding: 0;
+  font-size: 13.5px;
+}
+.disclaimer > span { min-width: 0; line-height: 32px; }
+.disclaimer > span a { display: inline-flex; align-items: center; white-space: nowrap; }
+.contact-trigger {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(var(--surface-solid), var(--surface-solid)) padding-box, var(--grad-ombre) border-box;
+  color: var(--blue-600);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #1e5bff0d;
+  transition: transform .25s, box-shadow .3s, color .3s;
+}
+.contact-trigger::before {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, #ffffff99 50%, transparent 58%);
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.contact-trigger:hover, .contact-trigger[aria-expanded="true"] {
+  background: linear-gradient(120deg, var(--surface-solid), var(--surface-hover)) padding-box, var(--grad-ombre) border-box;
+  color: var(--blue-900);
+  box-shadow: 0 4px 16px #1e5bff25;
+}
+.contact-trigger:hover { transform: translateY(-1px); }
+.contact-trigger:hover::before { animation: contact-sheen .5s ease-out; }
+.contact-trigger:hover .contact-info-icon { transform: translateY(-1px) rotate(-10deg); }
+.contact-trigger:active { transform: scale(.97); }
+.contact-trigger:focus-visible, .contact-row:focus-visible, .contact-close:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+}
+.contact-info-icon, .contact-chevron { flex-shrink: 0; transition: transform .3s; }
+.contact-trigger[aria-expanded="true"] .contact-chevron { transform: rotate(180deg); }
+:root[data-theme="dark"] .contact-trigger { color: var(--accent-text); }
+:root[data-theme="dark"] .contact-trigger::before { opacity: .4; }
+
+/* Portal positioning avoids the composer's transformed/filtered containing block. */
+.contact-popover {
+  position: fixed;
+  z-index: 40;
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  padding: 0;
+  border: 1.5px solid transparent;
+  border-radius: 22px;
+  color: var(--text);
+  background: linear-gradient(125deg, var(--surface-solid), var(--surface)) padding-box, var(--grad-ombre) border-box;
+  backdrop-filter: blur(24px);
+  box-shadow: var(--glass-shadow), 0 12px 48px #1e5bff26;
+  transform-origin: var(--contact-arrow) bottom;
+  outline: none;
+}
+.contact-popover[data-side="bottom"] { transform-origin: var(--contact-arrow) top; }
+.contact-popover::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: var(--contact-arrow);
+  bottom: -6px;
+  background: var(--surface-solid);
+  border-right: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
+  transform: translateX(-50%) rotate(45deg);
+}
+.contact-popover[data-side="bottom"]::after { top: -6px; bottom: auto; transform: translateX(-50%) rotate(225deg); }
+.contact-popover-content { display: grid; gap: 12px; padding: 16px; border-radius: inherit; }
+.contact-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.contact-heading h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--muted); }
+.contact-close { width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center; color: var(--muted); border-radius: 50%; flex-shrink: 0; }
+.contact-close:hover { background: var(--surface-hover); color: var(--text); }
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  text-align: left;
+  color: var(--text);
+  animation: contact-row-in .24s cubic-bezier(.22,1,.36,1) both;
+  animation-delay: var(--row-delay);
+}
+.contact-row:hover { background: var(--surface-hover); transform: translateY(-1px); }
+.contact-hotline { height: auto; min-height: 56px; transition: transform .3s var(--ease), background-color .3s; }
+.contact-hotline .hotline-numbers { display: flex; align-items: center; gap: 4px; overflow: visible; }
+.hotline-numbers a { color: inherit; white-space: nowrap; border-radius: 4px; }
+.hotline-numbers a:hover { background: var(--surface-hover); color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; transform: none; }
+.hotline-numbers a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+@media (max-width: 379px) {
+  .contact-hotline .hotline-numbers { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .hotline-divider { display: none; }
+}
+.contact-row-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 3px; }
+.contact-row-copy strong, .contact-row-copy > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.contact-row-copy strong { font-size: 14.5px; font-weight: 600; }
+.contact-row-copy > span { font-size: 13.5px; color: var(--muted); }
+.contact-tile { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #1e5bff14, #38bdf81c); color: var(--accent-text); }
+.contact-row-arrow { flex: 0 0 16px; color: var(--accent-text); transition: transform .25s; }
+a.contact-row:hover .contact-row-arrow { transform: translate(2px, -2px); }
+@keyframes contact-sheen { 0% { transform: translateX(-100%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
+@keyframes contact-row-in { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
+@media (max-width: 767px) { .composer-shell { --composer-radius: 21px; } }
+@media (max-width: 479px) {
+  .contact-popover { width: 92vw; }
+  .disclaimer > span { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rgb-border[data-registered="true"], .rgb-border-pulse { animation: none; }
+  .contact-row, .contact-trigger:hover::before { animation: none; }
+  .contact-trigger, .contact-info-icon, .contact-chevron, .contact-row-arrow { transition: none; }
+  .contact-trigger:hover, .contact-trigger:hover .contact-info-icon, .contact-row:hover, a.contact-row:hover .contact-row-arrow { transform: none; }
+}
