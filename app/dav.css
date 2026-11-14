@@ -583,17 +583,6 @@ svg {
 .mobile-more {
   display: none;
 }
-.scroll-progress {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: -1px;
-  height: 2px;
-  transform-origin: left;
-  background: var(--grad-brand);
-  box-shadow: 0 0 8px #4cb7ff80;
-  border-radius: 4px;
-}
 .main-content {
   max-width: 1030px;
   margin: auto;

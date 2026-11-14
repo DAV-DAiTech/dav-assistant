@@ -1,0 +1,151 @@
+/* Neon tokens for the header scroll-progress line and the composer border beam.
+   Registered as <color> so theme switches cross-fade instead of snapping. */
+@property --progress-from { syntax: "<color>"; inherits: true; initial-value: #1E5BFF; }
+@property --progress-via { syntax: "<color>"; inherits: true; initial-value: #38BDF8; }
+@property --progress-to { syntax: "<color>"; inherits: true; initial-value: #8FD3FF; }
+@property --progress-glow { syntax: "<color>"; inherits: true; initial-value: rgba(30,91,255,0.55); }
+@property --progress-tip { syntax: "<color>"; inherits: true; initial-value: #E11D48; }
+@property --beam-from { syntax: "<color>"; inherits: true; initial-value: #1E5BFF; }
+@property --beam-via { syntax: "<color>"; inherits: true; initial-value: #38BDF8; }
+@property --beam-to { syntax: "<color>"; inherits: true; initial-value: #BFE3FF; }
+@property --beam-glow { syntax: "<color>"; inherits: true; initial-value: rgba(30,91,255,0.5); }
+@property --beam-tip { syntax: "<color>"; inherits: true; initial-value: #FF6B8A; }
+
+:root {
+  --progress-from: #1E5BFF;
+  --progress-via: #38BDF8;
+  --progress-to: #8FD3FF;
+  --progress-glow: rgba(30,91,255,0.55);
+  --progress-tip: #E11D48;
+  --beam-from: #1E5BFF;
+  --beam-via: #38BDF8;
+  --beam-to: #BFE3FF;
+  --beam-glow: rgba(30,91,255,0.5);
+  --beam-tip: #FF6B8A;
+  transition:
+    --progress-from .3s, --progress-via .3s, --progress-to .3s, --progress-glow .3s, --progress-tip .3s,
+    --beam-from .3s, --beam-via .3s, --beam-to .3s, --beam-glow .3s, --beam-tip .3s;
+}
+:root[data-theme="dark"] {
+  --progress-from: #38E1FF;
+  --progress-via: #4C8DFF;
+  --progress-to: #7AA7FF;
+  --progress-glow: rgba(56,225,255,0.65);
+  --progress-tip: #FF4D6D;
+  --beam-from: #38E1FF;
+  --beam-via: #4C8DFF;
+  --beam-to: #A78BFA;
+  --beam-glow: rgba(56,225,255,0.55);
+  --beam-tip: #FF4D6D;
+}
+
+/* ---------- Scroll progress (header bottom edge) ---------- */
+.glass-header { --header-radius: 26px; }
+.scroll-progress {
+  position: absolute;
+  left: var(--header-radius);
+  right: var(--header-radius);
+  bottom: -1px;
+  height: 3px;
+  z-index: 2; /* above header surface and nav row; header (z 30) stays below dialogs */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.scroll-progress[data-state="active"] { opacity: 1; }
+.scroll-progress[data-state="idle"] { opacity: .35; transition-duration: .6s; }
+.scroll-progress-track,
+.scroll-progress-bar {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--progress-from), var(--progress-via), var(--progress-to));
+}
+.scroll-progress-track { opacity: .12; }
+.scroll-progress-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+  box-shadow: 0 0 8px var(--progress-glow);
+  will-change: transform;
+}
+.scroll-progress-comet {
+  position: absolute;
+  inset: 0;
+  transform: translateX(0);
+  will-change: transform;
+}
+.scroll-progress-head {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 25%, var(--progress-via) 60%);
+  box-shadow:
+    0 0 10px 2px var(--progress-glow),
+    0 0 18px 4px var(--progress-glow),
+    2px 0 6px -1px color-mix(in srgb, var(--progress-tip) 12%, transparent);
+}
+.scroll-progress-head:before {
+  content: "";
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  width: 46px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--progress-via));
+  filter: blur(1px);
+  opacity: .8;
+}
+@media (max-width: 767px) {
+  .glass-header { --header-radius: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-comet { display: none; }
+  .scroll-progress, .scroll-progress-bar { transition: none; }
+}
+
+/* ---------- Composer border beam ---------- */
+.composer-shell { overflow: visible; }
+/* Solid focus ring so the beam is never the only focus cue. */
+.composer-shell:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--blue-600) 70%, transparent);
+  outline-offset: 3px;
+}
+.composer-shell > :not(.border-beam) { position: relative; z-index: 1; }
+.border-beam {
+  position: absolute;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.border-beam rect { vector-effect: non-scaling-stroke; stroke-width: 2px; transition: stroke-width .3s ease; }
+.border-beam[data-state="typing"] rect { stroke-width: 2.5px; }
+.border-beam[data-state="active"],
+.border-beam[data-state="typing"],
+.border-beam[data-state="pulse"] { opacity: 1; }
+.border-beam-secondary { opacity: .45; }
+.border-beam-glow { opacity: .6; transition: opacity .3s ease; }
+.border-beam[data-state="typing"] .border-beam-glow { opacity: .85; }
+.border-beam[data-state="typing"] .border-beam-core { filter: brightness(1.2); }
+.border-beam[data-state="pulse"] { animation: beam-pulse .4s ease-out; }
+.border-beam-static { display: none; }
+@keyframes beam-pulse {
+  0% { opacity: 1; }
+  35% { opacity: .55; }
+  100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .border-beam-moving { display: none; }
+  .border-beam-static { display: inline; }
+  .border-beam-static rect:first-child { opacity: .6; }
+  .border-beam[data-state="pulse"] { animation: none; }
+}

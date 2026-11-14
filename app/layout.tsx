@@ -4,6 +4,7 @@ import "@fontsource-variable/plus-jakarta-sans";
 import "./design-tokens.css";
 import "./dav.css";
 import "./ombre.css";
+import "./neon.css";
 
 const title = "DAV Assistant — CLB AI & Công nghệ Học viện Ngoại giao – DAiTech";
 const description = "Trợ lý AI song ngữ do CLB AI & Công nghệ Học viện Ngoại giao – DAiTech phát triển. Khám phá tuyển sinh, học phí, học bổng và cuộc sống sinh viên.";

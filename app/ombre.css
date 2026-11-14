@@ -25,10 +25,8 @@ button, a, summary { transition: transform .3s var(--ease), box-shadow .3s var(-
 }
 .glass-header { max-width: 1440px; left: max(20px, calc((100vw - 1440px) / 2)); right: max(20px, calc((100vw - 1440px) / 2)); min-height: 86px; padding: 14px 20px; gap: 18px; border-radius: 26px; }
 .glass-header:before { display: none; }
-.glass-header:after { content: ""; position: absolute; left: 26px; right: 26px; bottom: -2px; height: 1px; background: var(--grad-ombre-line); pointer-events: none; }
 .glass-header.is-scrolled { border-color: transparent; box-shadow: var(--glass-shadow), 0 16px 40px #1e5bff14; }
 .header-fade { background: linear-gradient(var(--bg), transparent); }
-.scroll-progress { background: var(--grad-ombre-line); }
 .brand strong { font-size: 20px; }
 .brand small { font-size: 13px; white-space: normal; max-width: 260px; }
 .header-nav { flex-shrink: 0; }

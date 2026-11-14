@@ -4,6 +4,10 @@
 
 ### Presentation
 
+- Replaced the header bottom line with a single neon scroll-progress line (track, glowing bar and comet head) inset by the header radius; it fades in while scrolling and dims when idle. Removed the duplicate static ombre underline.
+- Replaced the composer rotating border with a shared SVG border beam that follows the rounded outline, brightens on focus/typing and pulses once on send. Added a solid focus ring; reduced motion shows a static gradient outline.
+- Added registered `--progress-*` and `--beam-*` Light/Dark tokens that cross-fade on theme change.
+
 - Default first visit to Light, independently of OS preference. Existing Light/Dark/System and language choices are preserved. Root `data-ombre="blue-white"` selects blue/sky/white borders; `blue-red` selects the alternate token.
 - Added near-black text, white surfaces, blue ombre double-background borders, inner highlights, 20px glass blur and soft blue shadows across header/navigation/controls, topics/cards, composer/messages, menus/dialogs, popovers and notifications. Dark mode uses separate contrast-tested surfaces.
 - Primary fills use deep blue with the brightest stop beyond the visible fill to preserve white-label contrast. Focus/hover borders rotate over six seconds. Header bottom edge fades; ambient decoration stays faint in Light.

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, ArrowUpRight, FileText, Info, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
+import { BorderBeam } from "./border-beam";
 export function Composer({
   language,
   streaming,
@@ -65,6 +66,10 @@ export function Composer({
     };
   }, [detailsOpen]);
   const [input, setInput] = useState("");
+  const shell = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
+  const [activity, setActivity] = useState(0);
+  const [pulse, setPulse] = useState(0);
   const [files, setFiles] = useState<string[]>([]);
   const [micActive, setMicActive] = useState(false);
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -101,6 +106,7 @@ export function Composer({
   function submit() {
     if (!input.trim() || streaming) return;
     send(input.trim());
+    setPulse((n) => n + 1);
     setInput("");
     setFiles([]);
   }
@@ -115,8 +121,21 @@ export function Composer({
         layout: { duration: reduced ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] },
       }}
     >
-      <div className="composer-shell">
-        <span className="composer-border" aria-hidden="true" />
+      <div
+        ref={shell}
+        className="composer-shell"
+        onFocus={() => setFocused(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+            setFocused(false);
+        }}
+      >
+        <BorderBeam
+          host={shell}
+          focused={focused}
+          activity={activity}
+          pulse={pulse}
+        />
         {files.length > 0 && (
           <div className="attached-files">
             {files.map((name, i) => (
@@ -174,7 +193,10 @@ export function Composer({
             data-lenis-prevent
             aria-describedby="composer-hints"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setActivity((n) => n + 1);
+            }}
             aria-label={t.placeholder}
             placeholder={t.placeholder}
             rows={1}

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { Logo, Modal } from "./primitives";
+import { ScrollProgress } from "./scroll-progress";
 export type Theme = "light" | "dark" | "system";
 type Props = {
   language: Language;
@@ -68,7 +69,7 @@ export function Header(p: Props) {
   }, []);
   const [menu, setMenu] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
-  const { scrollYProgress, scrollY } = useScroll();
+  const { scrollY } = useScroll();
   const headerScale = useTransform(scrollY, [0, 180], [1, 0.985]);
   const reduced = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
@@ -210,10 +211,7 @@ export function Header(p: Props) {
             <Menu className="mobile-more" size={21} />
           </button>
         </div>
-        <motion.div
-          className="scroll-progress"
-          style={{ scaleX: scrollYProgress }}
-        />
+        <ScrollProgress />
       </motion.header>
       {menu && (
         <Modal
