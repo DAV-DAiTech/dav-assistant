@@ -1,5 +1,13 @@
 # Changelog
 
+## Composer focus and compact contacts — 2026-11-15
+
+- `app/composer.css`: removed the inner textarea focus rectangle; inner form/input surfaces stay transparent and frameless. Outer RGB styling, animation and implementation are unchanged. Contact rows have 12px gaps, auto-fit content and individually focusable hotline links.
+- `components/dav/contact-popover.tsx`: merged both hotline numbers into one row; removed personal-information and club-name rows and the orphaned divider. Facebook/Email, popover positioning, notch and open/close animation are preserved.
+- `lib/frontend/i18n.ts`: removed only the unused `personalInformation` and `privacy` entries in VI/EN; retained official club names for footer/metadata.
+- `tests/frontend.test.ts`: added focused composer/contact regression coverage. `CHANGELOG.md`: this entry.
+- Removed component: the personal-information and club-name `ContactRow` instances. The old `BorderBeam` component/overlay had already been removed before this change; no beam or decorative input-dot element exists in the current composer source. No backend, history or environment changes.
+
 ## Composer and contacts — 2026-11-15
 
 - Replaced the SVG beam/dot and duplicate outer outline with shared `RgbBorderComposer`: a full-perimeter masked spectrum, independent hue drift, phase-preserving typing acceleration, send pulse, hidden-tab pause, and reduced-motion/static fallback. Kept the glass fill and radius; unfocused drafts retain a faint static ombre, empty borders fade out, and an input-level solid focus cue remains visible.

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Info, Mail, Phone, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Info, Mail, Phone, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { getContactPosition } from "@/lib/frontend/contact-position";
 
@@ -122,24 +122,29 @@ export function ContactPopover({ language }: { language: Language }) {
         data-lenis-prevent
         style={{ left: position?.left ?? 0, top: position?.top ?? 0,
           visibility: position ? "visible" : "hidden", "--contact-arrow": `${position?.arrow ?? 180}px`,
-          "--contact-max-height": `${position?.maxHeight ?? 600}px`,
         } as CSSProperties}
         initial={{ opacity: 0, scale: reduced ? 1 : .96, y: reduced ? 0 : 8, filter: reduced ? "none" : "blur(6px)" }}
         animate={{ opacity: 1, scale: 1, y: 0, filter: reduced ? "none" : "blur(0px)" }}
         exit={{ opacity: 0, scale: reduced ? 1 : .96, y: reduced ? 0 : 4, transition: { duration: reduced ? 0 : .16 } }}
         transition={{ duration: reduced ? 0 : .24, ease: [.22, 1, .36, 1] }}>
-        <div className="contact-popover-scroll">
+        <div className="contact-popover-content">
           <div className="contact-heading"><h2>{t.contactClub}</h2>
             <button className="contact-close" type="button" onClick={close} aria-label={t.close}><X size={16} /></button>
           </div>
           <ContactRow index={0} icon={<FacebookGlyph />} title="Facebook" value={t.contactClubShort}
             href="https://www.facebook.com/profile.php?id=61591989592893" external label={t.openClubFacebook} />
           <ContactRow index={1} icon={<Mail size={20} />} title="Email" value="daitechclub1@gmail.com" href="mailto:daitechclub1@gmail.com" />
-          <hr />
-          <ContactRow index={2} icon={<Phone size={20} />} title={t.admissionsHotline} value="0943.482.840" href="tel:0943482840" />
-          <ContactRow index={3} icon={<Phone size={20} />} title={t.admissionsHotline} value="0936.018.433" href="tel:0936018433" />
-          <ContactRow index={4} icon={<ShieldCheck size={20} />} title={t.personalInformation} value={t.privacy} />
-          <ContactRow index={5} icon={<Users size={20} />} title={t.contactClubShort} value={t.clubFullName} />
+          <div className="contact-row contact-hotline" style={{ "--row-delay": "80ms" } as CSSProperties}>
+            <span className="contact-tile" aria-hidden="true"><Phone size={20} /></span>
+            <span className="contact-row-copy">
+              <strong>{t.admissionsHotline}</strong>
+              <span className="hotline-numbers">
+                <a href="tel:0943482840">0943.482.840</a>
+                <span className="hotline-divider" aria-hidden="true">·</span>
+                <a href="tel:0936018433">0936.018.433</a>
+              </span>
+            </span>
+          </div>
         </div>
       </motion.div>}
     </AnimatePresence>, document.body)}

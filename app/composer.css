@@ -23,11 +23,16 @@
 /* The masked overlay replaces the old border without changing the glass fill. */
 .composer-shell:focus-within { outline: none; }
 .composer-shell > :not(.rgb-border) { position: relative; z-index: 1; }
-/* A solid input-level cue avoids drawing a second outline around the shell. */
-.composer textarea:focus-visible {
-  outline: 2px solid var(--accent-text) !important;
-  outline-offset: 2px;
-  border-radius: 8px;
+/* The shared outer RGB band provides the composer's focus indicator. */
+.composer-shell :is(.composer, .composer-hints, textarea, input) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.composer button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 .rgb-border {
   --rgb-angle: 0deg;
@@ -173,8 +178,8 @@
   transform: translateX(-50%) rotate(45deg);
 }
 .contact-popover[data-side="bottom"]::after { top: -6px; bottom: auto; transform: translateX(-50%) rotate(225deg); }
-.contact-popover-scroll { padding: 16px; max-height: var(--contact-max-height); overflow-y: auto; overscroll-behavior: contain; border-radius: inherit; }
-.contact-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.contact-popover-content { display: grid; gap: 12px; padding: 16px; border-radius: inherit; }
+.contact-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .contact-heading h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--muted); }
 .contact-close { width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center; color: var(--muted); border-radius: 50%; flex-shrink: 0; }
 .contact-close:hover { background: var(--surface-hover); color: var(--text); }
@@ -190,7 +195,16 @@
   animation: contact-row-in .24s cubic-bezier(.22,1,.36,1) both;
   animation-delay: var(--row-delay);
 }
-a.contact-row:hover { background: var(--surface-hover); transform: translateY(-1px); }
+.contact-row:hover { background: var(--surface-hover); transform: translateY(-1px); }
+.contact-hotline { height: auto; min-height: 56px; transition: transform .3s var(--ease), background-color .3s; }
+.contact-hotline .hotline-numbers { display: flex; align-items: center; gap: 4px; overflow: visible; }
+.hotline-numbers a { color: inherit; white-space: nowrap; border-radius: 4px; }
+.hotline-numbers a:hover { background: var(--surface-hover); color: var(--accent-text); text-decoration: underline; text-underline-offset: 2px; transform: none; }
+.hotline-numbers a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+@media (max-width: 379px) {
+  .contact-hotline .hotline-numbers { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .hotline-divider { display: none; }
+}
 .contact-row-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 3px; }
 .contact-row-copy strong, .contact-row-copy > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
 .contact-row-copy strong { font-size: 14.5px; font-weight: 600; }
@@ -198,7 +212,6 @@ a.contact-row:hover { background: var(--surface-hover); transform: translateY(-1
 .contact-tile { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #1e5bff14, #38bdf81c); color: var(--accent-text); }
 .contact-row-arrow { flex: 0 0 16px; color: var(--accent-text); transition: transform .25s; }
 a.contact-row:hover .contact-row-arrow { transform: translate(2px, -2px); }
-.contact-popover hr { border: 0; height: 1px; background: var(--border); margin: 8px 6px; }
 @keyframes contact-sheen { 0% { transform: translateX(-100%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
 @keyframes contact-row-in { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
 @media (max-width: 767px) { .composer-shell { --composer-radius: 21px; } }
@@ -210,5 +223,5 @@ a.contact-row:hover .contact-row-arrow { transform: translate(2px, -2px); }
   .rgb-border[data-registered="true"], .rgb-border-pulse { animation: none; }
   .contact-row, .contact-trigger:hover::before { animation: none; }
   .contact-trigger, .contact-info-icon, .contact-chevron, .contact-row-arrow { transition: none; }
-  .contact-trigger:hover, .contact-trigger:hover .contact-info-icon, a.contact-row:hover, a.contact-row:hover .contact-row-arrow { transform: none; }
+  .contact-trigger:hover, .contact-trigger:hover .contact-info-icon, .contact-row:hover, a.contact-row:hover .contact-row-arrow { transform: none; }
 }

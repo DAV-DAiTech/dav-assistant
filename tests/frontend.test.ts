@@ -20,6 +20,29 @@ test("both composer layouts share the RGB border without changing send/history w
   assert.match(composer, /e\.nativeEvent\.isComposing \|\| e\.keyCode === 229/);
 });
 
+test("composer internals remain frameless while the outer RGB focus band is retained", () => {
+  const css = readFileSync(new URL("../app/composer.css", import.meta.url), "utf8");
+  const reset = css.match(/\.composer-shell :is\(\.composer, \.composer-hints, textarea, input\) \{([^}]+)\}/)![1];
+  for (const declaration of ["outline: none !important", "box-shadow: none !important", "border: 0 !important", "background: transparent !important"])
+    assert.ok(reset.includes(declaration));
+  assert.doesNotMatch(css, /\.composer textarea:focus-visible/);
+  assert.match(css, /\.rgb-border\[data-focused="true"\] \.rgb-border-core/);
+});
+
+test("contact panel has three rows and two independent hotline links", () => {
+  const panel = readFileSync(new URL("../components/dav/contact-popover.tsx", import.meta.url), "utf8");
+  assert.equal((panel.match(/<ContactRow index=/g) ?? []).length, 2);
+  assert.equal((panel.match(/className="contact-row contact-hotline"/g) ?? []).length, 1);
+  for (const phone of ["0943482840", "0936018433"])
+    assert.equal((panel.match(new RegExp(`href="tel:${phone}"`, "g")) ?? []).length, 1);
+  assert.doesNotMatch(panel, /ShieldCheck|Users|personalInformation|t\.privacy|t\.clubFullName|<hr|contact-popover-scroll/);
+  for (const language of ["vi", "en"] as const) {
+    assert.equal("personalInformation" in text[language], false);
+    assert.equal("privacy" in text[language], false);
+    assert.ok(text[language].footer.includes(text[language].clubFullName));
+  }
+});
+
 test("contact panel stays within each viewport and flips near the top", () => {
   for (const width of [360, 768, 1280, 1920]) {
     const panelWidth = width < 480 ? width * .92 : 360;
