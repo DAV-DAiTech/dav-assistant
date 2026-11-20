@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { DatLogo } from './dat-logo';
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ChevronDown, Info, Mail, Phone, X } from "lucide-react";
@@ -128,7 +129,7 @@ export function ContactPopover({ language }: { language: Language }) {
         exit={{ opacity: 0, scale: reduced ? 1 : .96, y: reduced ? 0 : 4, transition: { duration: reduced ? 0 : .16 } }}
         transition={{ duration: reduced ? 0 : .24, ease: [.22, 1, .36, 1] }}>
         <div className="contact-popover-content">
-          <div className="contact-heading"><h2>{t.contactClub}</h2>
+          <div className="contact-heading dat-contact"><DatLogo size={40} /><div><h2>DAiTech</h2><small>{t.clubFullName}</small></div>
             <button className="contact-close" type="button" onClick={close} aria-label={t.close}><X size={16} /></button>
           </div>
           <ContactRow index={0} icon={<FacebookGlyph />} title="Facebook" value={t.contactClubShort}

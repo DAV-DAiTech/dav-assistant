@@ -10,6 +10,7 @@ import {
   type Language,
 } from "@/lib/frontend/i18n";
 import { suggestions } from "@/lib/frontend/suggestions";
+import { AboutDaitech, FooterBrand } from './daitech-sections';
 import { Logo, Reveal } from "./primitives";
 // Reopening the welcome screen preserves the page-load choice, including across language changes.
 let pageHeadlineIndex: number | null = null;
@@ -133,9 +134,8 @@ export function Discovery({
           <ArrowRight size={17} />
         </button>
       </Reveal>
-      <footer className="site-footer">
-        <span>{t.footer}</span>
-      </footer>
+      <AboutDaitech language={language} openEcosystem={openEcosystem} />
+      <FooterBrand language={language} />
     </div>
   );
 }

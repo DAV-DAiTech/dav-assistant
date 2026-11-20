@@ -1,0 +1,14 @@
+/* DAiTech brand tokens; WCAG 2.x contrast for white text (AA normal text: >= 4.5:1). */
+:root {
+  --dat-orange-300: #ec975d; /* white contrast 2.29:1; AA FAIL */
+  --dat-orange-600: #cc5939; /* white contrast 4.15:1; AA FAIL */
+  --dat-rust-600: #b25043; /* white contrast 5.10:1; AA PASS */
+  --dat-wine-500: #9b4b4d; /* white contrast 5.99:1; AA PASS */
+  --dat-rose-400: #c66d8b; /* white contrast 3.52:1; AA FAIL */
+  --dat-lavender-400: #8885ba; /* white contrast 3.44:1; AA FAIL */
+  --dat-blush-100: #f1d6cf; /* white contrast 1.38:1; AA FAIL */
+  --dat-blue-600: #4a6091; /* white contrast 6.23:1; AA PASS */
+  --dat-plum-900: #593644; /* white contrast 10.31:1; AA PASS */
+  --dat-wine-900: #6e353b; /* white contrast 9.39:1; AA PASS */
+  --dat-grad: linear-gradient(135deg,#ec975d,#cc5939,#b25043,#9b4b4d);
+}

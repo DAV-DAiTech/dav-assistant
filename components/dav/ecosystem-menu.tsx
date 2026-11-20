@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ecosystem } from "@/lib/frontend/ecosystem";
 import { text, type Language } from "@/lib/frontend/i18n";
+import { DatLogo } from './dat-logo';
 import { Modal } from "./primitives";
 
 export function EcosystemMenu({ language, onClose }: { language: Language; onClose: () => void }) {
@@ -20,7 +21,7 @@ export function EcosystemMenu({ language, onClose }: { language: Language; onClo
   return (
     <Modal title={t.ecosystem} closeLabel={t.close} onClose={onClose} className="ecosystem-modal">
       {(close) => <>
-        <p className="eyebrow">DAiTech × DAV</p>
+        <div className="dat-lockup" role="img" aria-label="DAiTech × DAV"><DatLogo size={28} /><span aria-hidden="true">×</span><img src="/assets/img/dav-logo.png" width={28} height={28} alt="" /></div>
         <h3 className="ecosystem-heading">{t.ecosystemIntro}</h3>
         <p className="muted">{t.ecosystemCopy}</p>
         <div className="ecosystem-grid">
