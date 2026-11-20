@@ -4,10 +4,6 @@
 .disclaimer .dat-mask { vertical-align:-.32em; margin-inline-end:.24em }
 .dat-lockup { display:flex; gap:9px; align-items:center; color:var(--muted); margin-block:10px }
 .dat-lockup > img { object-fit:contain }
-.dat-contact > div { flex:1; min-width:0 }
-.dat-contact h2 { text-transform:none; letter-spacing:normal; font-size:15px; color:var(--text) }
-.dat-contact small { display:block; font-size:12px; line-height:1.45; color:var(--muted) }
-.dat-contact .contact-close { width:44px; height:44px; flex:none }
 .dat-reveal { margin:clamp(28px,5vw,64px) auto 0; max-width:1180px }
 .dat-about { padding:2px; border-radius:32px; background:linear-gradient(115deg,#38bdf8,var(--dat-blue-600),var(--dat-lavender-400),var(--dat-orange-300),var(--dat-orange-600)); box-shadow:0 12px 38px #59364418; scroll-margin-top:var(--header-clearance) }
 .dat-art { border-radius:30px; overflow:hidden; background:linear-gradient(125deg,var(--dat-plum-900),var(--dat-wine-900)); color:white }

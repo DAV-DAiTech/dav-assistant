@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type 
 import { DatLogo } from './dat-logo';
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Info, Mail, Phone, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Info, Mail, Phone } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { getContactPosition } from "@/lib/frontend/contact-position";
 
@@ -38,23 +38,17 @@ export function ContactPopover({ language }: { language: Language }) {
   const id = useId();
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<ReturnType<typeof getContactPosition> | null>(null);
   const reduced = useReducedMotion();
-  const cancelHover = useCallback(() => clearTimeout(hoverTimer.current), []);
   const close = useCallback(() => {
-    cancelHover();
     setOpen(false);
     trigger.current?.focus({ preventScroll: true });
-  }, [cancelHover]);
+  }, []);
   const show = () => {
-    cancelHover();
     setPosition(null);
     setOpen(true);
   };
-
-  useEffect(() => cancelHover, [cancelHover]);
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -65,7 +59,7 @@ export function ContactPopover({ language }: { language: Language }) {
     const place = () => {
       frame = 0;
       const box = button.getBoundingClientRect();
-      setPosition(getContactPosition(box, dialog.offsetWidth, dialog.scrollHeight, window.innerWidth, window.innerHeight));
+      setPosition(getContactPosition(box, dialog.offsetWidth, (dialog.firstElementChild?.scrollHeight ?? dialog.scrollHeight) + dialog.offsetHeight - dialog.clientHeight, window.innerWidth, window.innerHeight));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(place);
@@ -108,12 +102,7 @@ export function ContactPopover({ language }: { language: Language }) {
   return <>
     <button ref={trigger} type="button" className="contact-trigger" aria-haspopup="dialog"
       aria-expanded={open} aria-controls={id}
-      onClick={() => open ? close() : show()}
-      onPointerEnter={(event) => {
-        if (!open && event.pointerType === "mouse" && matchMedia("(hover: hover) and (pointer: fine)").matches)
-          hoverTimer.current = setTimeout(show, 200);
-      }}
-      onPointerLeave={cancelHover} onPointerDown={cancelHover}>
+      onClick={() => open ? close() : show()}>
       <Info className="contact-info-icon" size={16} aria-hidden="true" />
       <span>{t.details}</span><ChevronDown className="contact-chevron" size={13} aria-hidden="true" />
     </button>
@@ -128,10 +117,8 @@ export function ContactPopover({ language }: { language: Language }) {
         animate={{ opacity: 1, scale: 1, y: 0, filter: reduced ? "none" : "blur(0px)" }}
         exit={{ opacity: 0, scale: reduced ? 1 : .96, y: reduced ? 0 : 4, transition: { duration: reduced ? 0 : .16 } }}
         transition={{ duration: reduced ? 0 : .24, ease: [.22, 1, .36, 1] }}>
-        <div className="contact-popover-content">
-          <div className="contact-heading dat-contact"><DatLogo size={40} /><div><h2>DAiTech</h2><small>{t.clubFullName}</small></div>
-            <button className="contact-close" type="button" onClick={close} aria-label={t.close}><X size={16} /></button>
-          </div>
+        <div className="contact-popover-content" style={{ maxHeight: position ? position.maxHeight - 3 : undefined }}>
+          <div className="contact-heading"><DatLogo size={48} /><div className="contact-row-copy"><h2>DAiTech</h2><span>{t.clubFullName}</span></div></div>
           <ContactRow index={0} icon={<FacebookGlyph />} title="Facebook" value={t.contactClubShort}
             href="https://www.facebook.com/profile.php?id=61591989592893" external label={t.openClubFacebook} />
           <ContactRow index={1} icon={<Mail size={20} />} title="Email" value="daitechclub1@gmail.com" href="mailto:daitechclub1@gmail.com" />
