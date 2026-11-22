@@ -69,9 +69,51 @@ html[data-deco=off] :is(.ambient-sun,.ambient-atmosphere,.footer-scene) {display
 .banner-network {inset:0 0 0 auto;width:48%;height:100%;object-fit:cover;--ink:.08}
 .question-art {display:none}.contact-heading .dat-tile {justify-self:center}.email-art {width:22px;height:22px}.disclaimer .dat-mask {width:16px;height:16px}
 .message-row.assistant .message-avatar {width:36px;height:36px;flex:0 0 36px;border-radius:50%;background:var(--surface);padding:4px}.assistant-robot {width:100%;height:100%}
-.send-button {position:relative}.send-cursor {position:absolute;width:20px;height:20px;bottom:-11px;right:-8px}.send-button:hover .send-cursor {animation:cursor-nudge .2s var(--ease-out)}@keyframes cursor-nudge {50%{transform:translate(4px,2px)}}
-.dat-footer {padding-inline:0;padding-bottom:64px}.footer-floor {bottom:0;width:100%;height:48px;object-fit:cover;--ink:.45;mask-image:linear-gradient(90deg,transparent,#000 20% 80%,transparent)}.footer-cloud {right:0;bottom:0;width:40%;height:85%;object-position:bottom right;--ink:.25}.footer-bamboo,.footer-drum {display:none}
-@media(min-width:1280px){.section-kicker {min-height:60px;padding-left:60px}.question-art {display:block;position:absolute;left:0;top:2px;width:48px;height:52px;animation-delay:-3s}.dat-footer {--gutter:max(0px,calc((100vw - 1380px)/2));margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter)}.footer-bamboo,.footer-drum {display:block;bottom:0;width:min(var(--gutter),100px);--ink:.85}.footer-bamboo {left:0;height:150px}.footer-drum {right:0;height:120px;animation-delay:-4s}}
+.send-button {position:relative}
+.dat-footer {padding-inline:0;padding-bottom:0;margin-bottom:0}.footer-cloud {right:0;bottom:0;width:40%;height:85%;object-position:bottom right;--ink:.25}
+@media(min-width:1280px){.section-kicker {min-height:60px;padding-left:60px}.question-art {display:block;position:absolute;left:0;top:2px;width:48px;height:52px;animation-delay:-3s}}
 @media(max-width:1099px){.robot-ground,.hero-robot{display:none}}
 @media(max-width:767px){:root{--section-space:48px}.main-content{padding-inline:16px}.ambient-network,.ambient-code,.ribbon,.banner-network,.footer-floor,.feature-art[src$="network.webp"]{display:none}.feature-art{height:56px;top:calc(50% - 28px);--ink:.10}.feature-card:is(:hover,:focus-visible) .feature-art{--ink:.30}.cloud{transform:none}.ecosystem-modal .modal-top{padding:16px 20px;margin-inline:-20px}.hero-robot{display:block;left:calc(50% - 120px);top:32px;width:56px}.intro-globe{height:64px}.dat-footer{padding-bottom:24px}}
-@media(prefers-reduced-motion:reduce){.deco,.deco-float,.send-button:hover .send-cursor,:is(.feature-card,.ecosystem-card,.suggestion-card,.dat-actions a,.dat-actions button)::after{animation:none!important;transition:none!important}.cloud,.feature-card:is(:hover,:focus-visible) .feature-art,:is(.feature-card,.ecosystem-card,.suggestion-card):is(:hover,:focus-visible){transform:none!important}}
+@media(prefers-reduced-motion:reduce){.deco,.deco-float,:is(.feature-card,.ecosystem-card,.suggestion-card,.dat-actions a,.dat-actions button)::after{animation:none!important;transition:none!important}.cloud,.feature-card:is(:hover,:focus-visible) .feature-art,:is(.feature-card,.ecosystem-card,.suggestion-card):is(:hover,:focus-visible){transform:none!important}}
+
+/* Revision 3: one continuous page surface; art feathers out instead of ending on an edge. */
+:root {--page-bg:#fff;--page-ombre:radial-gradient(ellipse at 100% 100%,rgb(236 151 93/.08),transparent 45%),radial-gradient(ellipse at 0% 0%,rgb(56 189 248/.06),transparent 45%),linear-gradient(180deg,#F5F9FF,#fff 75%)}
+:root[data-theme=dark] {--page-bg:var(--bg);--page-ombre:var(--bg)}
+html,body {background:var(--page-bg)}
+body {overflow-x:clip}
+.ambient,:root[data-theme=dark] .ambient {background:var(--page-ombre);overflow:visible}
+.welcome-hero,.discovery,.suggestion-grid,.dat-reveal {background:none}
+.hero-art {inset:0 auto auto 50%;height:max(100vh,920px);mask-image:linear-gradient(to bottom,#000 0%,#000 50%,transparent 100%);background:radial-gradient(ellipse at 100% 70%,rgb(236 151 93/.10),transparent 55%),radial-gradient(ellipse at 0% 30%,rgb(56 189 248/.10),transparent 50%),radial-gradient(ellipse at 50% 0%,rgb(136 133 186/.08),transparent 50%)}
+[data-theme=dark] .hero-art {background:none}
+.cloud {width:clamp(300px,30vw,560px);bottom:12%;--ink:.45;mask-image:linear-gradient(to right,#000 50%,transparent 100%)}
+.cloud.right {mask-image:linear-gradient(to left,#000 50%,transparent 100%)}
+.hero-robot {top:250px}.robot-ground {top:340px}
+.ambient-code,.ambient-network {mask-image:radial-gradient(closest-side,#000 40%,transparent 100%)}
+.composer-area.is-docked:after {background:linear-gradient(to top,var(--page-bg) 55%,transparent 100%);border:0;box-shadow:none}
+.topic-carousel[data-left="true"] .topic-viewport {--fade-left:72px}
+.topic-carousel[data-right="true"] .topic-viewport {--fade-right:72px}
+
+.footer-scene {position:relative;display:block;width:100vw;left:50%;transform:translateX(-50%);height:clamp(96px,10vw,180px);margin:0;padding:0;isolation:isolate;pointer-events:none}
+.footer-scene::before {content:'';position:absolute;inset:auto 0 0;height:240%;z-index:-1;background:radial-gradient(ellipse 70% 100% at 50% 100%,rgb(236 151 93/.14),transparent 70%)}
+[data-theme=dark] .footer-scene::before {background:radial-gradient(ellipse 70% 100% at 50% 100%,rgb(155 75 77/.22),transparent 70%)}
+.dat-footer .footer-floor {display:block;position:absolute;bottom:0;left:0;width:100vw;height:100%;object-fit:fill;opacity:.9;mask-image:linear-gradient(to top,#000 65%,transparent 100%)}
+
+.ecosystem-modal {--ring:linear-gradient(135deg,#38BDF8,#4a6091,#8885ba,#ec975d);border:1px solid transparent;border-radius:28px;scrollbar-width:thin;scrollbar-color:rgb(74 96 145/.35) transparent;box-shadow:0 0 40px rgb(56 189 248/.14),0 30px 100px rgb(30 91 255/.14);
+  background:radial-gradient(circle at 92% 6%,rgb(236 151 93/.11),transparent 40%) padding-box,radial-gradient(circle at 0% 100%,rgb(56 189 248/.09),transparent 45%) padding-box,radial-gradient(circle at 40% 0%,rgb(136 133 186/.08),transparent 40%) padding-box,radial-gradient(circle at 100% 100%,rgb(155 75 77/.07),transparent 45%) padding-box,linear-gradient(160deg,#f4f9ff 0%,#e6f0ff 50%,#fdeee6 100%) padding-box,var(--ring) border-box}
+[data-theme=dark] .ecosystem-modal {scrollbar-color:rgb(255 255 255/.28) transparent;
+  background:radial-gradient(circle at 92% 6%,rgb(236 151 93/.22),transparent 40%) padding-box,radial-gradient(circle at 0% 100%,rgb(56 189 248/.18),transparent 45%) padding-box,radial-gradient(circle at 40% 0%,rgb(136 133 186/.16),transparent 40%) padding-box,radial-gradient(circle at 100% 100%,rgb(155 75 77/.14),transparent 45%) padding-box,linear-gradient(160deg,#0b1630 0%,#13244a 45%,#1a2f5e 100%) padding-box,var(--ring) border-box}
+.ecosystem-modal::-webkit-scrollbar {width:8px}.ecosystem-modal::-webkit-scrollbar-track {background:transparent}
+.ecosystem-modal::-webkit-scrollbar-thumb {border-radius:8px;background:rgb(74 96 145/.35)}[data-theme=dark] .ecosystem-modal::-webkit-scrollbar-thumb {background:rgb(255 255 255/.28)}
+.ecosystem-modal::backdrop,:root[data-theme=dark] .ecosystem-modal::backdrop {backdrop-filter:blur(10px);background:rgb(30 50 90/.25)}
+:root[data-theme=dark] .ecosystem-modal::backdrop {background:rgb(8 14 30/.45)}
+.ecosystem-modal .modal-top,[data-theme=dark] .ecosystem-modal .modal-top {display:flex;align-items:center;background:transparent;backdrop-filter:none;border:0;box-shadow:none;padding:24px 32px}
+.ecosystem-modal .modal-top::before {content:'';position:absolute;inset:0 0 -16px;z-index:-1;backdrop-filter:blur(16px) saturate(140%);mask-image:linear-gradient(to bottom,#000 70%,transparent 100%)}
+.modal-network {--ink:.10;mask-image:radial-gradient(closest-side,#000 35%,transparent 100%),linear-gradient(#000 40%,transparent);mask-composite:intersect}
+.intro-globe {width:128px;height:128px;max-width:none;flex:none;overflow:visible;filter:saturate(.9) drop-shadow(0 6px 18px rgb(236 151 93/.45))}
+@media(max-width:767px){
+  .footer-scene {height:64px}.dat-footer .footer-floor {display:block}
+  .ecosystem-modal {inset:0;width:100%;max-width:100%;height:100dvh;max-height:100dvh;border-radius:0;border-width:0;padding:max(8px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+  .ecosystem-modal .modal-top {padding:16px 20px}
+  .intro-globe {width:88px;height:88px}
+}
+.dat-footer {overflow:visible}.dat-footer .footer-credits {position:relative;overflow:hidden;isolation:isolate;padding-bottom:28px}

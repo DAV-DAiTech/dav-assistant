@@ -26,8 +26,6 @@ export function FooterBrand({ language }: { language: Language }) {
   </div><p className="dat-copyright">{t.footer}</p></div>
     <div className="footer-scene" aria-hidden="true">
       <DecoImage name="dat-el-circuit-floor" className="footer-floor" />
-      <DecoImage name="dat-el-bamboo" className="footer-bamboo" float />
-      <DecoImage name="dat-el-lac-drum" className="footer-drum" float />
     </div>
   </footer>;
 }
