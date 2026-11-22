@@ -1,4 +1,5 @@
 "use client";
+import { DecoImage } from './deco-image';
 import { useState } from "react";
 import {
   HardDrive,
@@ -90,7 +91,7 @@ export function HistoryPanel({
           </div>
         ) : filtered.length === 0 ? (
           <div className="history-empty">
-            <MessageSquare size={30} />
+            <DecoImage name="dat-el-magnifier" className="history-glass" float />
             <h3>{search ? t.clearSearch : t.empty}</h3>
             {!search && <p>{t.emptyCopy}</p>}
           </div>

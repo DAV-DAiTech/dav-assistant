@@ -1,6 +1,7 @@
 "use client";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Sparkles, Globe2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
+import { DecoImage, HeroArt } from './deco-image';
 import { useEffect, useState } from "react";
 import {
   featureDescriptions,
@@ -32,13 +33,14 @@ export function Welcome({ language }: { language: Language }) {
   return (
     <>
       <section className="welcome-hero">
+        <HeroArt />
         <Reveal className="hero-mark">
           <Logo hero />
           <span className="hero-sparkle">
             <Sparkles size={17} />
           </span>
         </Reveal>
-        <Reveal delay={0.06}>
+        <Reveal delay={0.08}>
           <p className="eyebrow hero-eyebrow">{t.heroEyebrow}</p>
         </Reveal>
         <div className="headline-slot">
@@ -46,9 +48,9 @@ export function Welcome({ language }: { language: Language }) {
             {headline !== null && (
               <motion.h1
                 key={`${language}-${headline}`}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: reduced ? 0 : 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
+                exit={{ opacity: 0, y: reduced ? 0 : -8 }}
                 transition={{ duration: 0.3 }}
               >
                 <span className="headline-intro">
@@ -90,6 +92,7 @@ export function Discovery({
 }) {
   const t = text[language];
   const indices = [0, 3, 2, 6, 8, 5];
+  const marks = ['dat-el-building-right', 'dat-el-brain', 'dat-el-computer', 'dat-el-podium-rings', 'dat-el-network', 'dat-el-globe'] as const;
   const descriptions = featureDescriptions[language];
   return (
     <div className="discovery">
@@ -102,6 +105,7 @@ export function Discovery({
         {indices.map((index, i) => {
           const item = suggestions[index];
           const content = <>
+            <DecoImage name={marks[i]} className="feature-art" />
             <span className="feature-number">0{i + 1}</span>
             <span className="icon-tile"><item.icon size={23} /></span>
             <h3>{item.label[language]}</h3>
@@ -123,7 +127,8 @@ export function Discovery({
       </div>
       <Reveal className="ecosystem-teaser">
         <div className="teaser-icon">
-          <Globe2 size={40} strokeWidth={1} />
+          <DecoImage name="dat-el-globe" className="teaser-globe" float />
+          <DecoImage name="dat-el-network" className="banner-network" />
         </div>
         <div>
           <h2>{t.ecosystemTeaser}</h2>

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { DecoImage } from './deco-image';
 
 export function Logo({ hero = false }: { hero?: boolean }) {
   return (
@@ -30,10 +31,10 @@ export function Reveal({
   return (
     <motion.div
       className={className}
-      initial={reduced ? false : { opacity: 0, y: 24, filter: "blur(8px)" }}
+      initial={reduced ? false : { opacity: 0, y: 14, filter: "blur(4px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "0px 0px -20px 0px" }}
-      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.42, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
@@ -157,6 +158,29 @@ export function AmbientBackground() {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   useEffect(() => {
+    const root = document.documentElement;
+    const watched = new WeakSet<Element>();
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) entry.target.toggleAttribute('data-loop-offscreen', !entry.isIntersecting);
+    });
+    const watch = (el: Element) => {
+      if (!watched.has(el)) { watched.add(el); observer.observe(el); }
+    };
+    const started = (event: AnimationEvent) => {
+      const el = event.target;
+      if (el instanceof Element && getComputedStyle(el, event.pseudoElement || null).animationIterationCount.includes('infinite')) watch(el);
+    };
+    const visibility = () => root.toggleAttribute('data-tab-hidden', document.hidden);
+    visibility();
+    for (const animation of document.getAnimations()) {
+      const effect = animation.effect;
+      if (effect instanceof KeyframeEffect && effect.target instanceof Element && effect.getTiming().iterations === Infinity) watch(effect.target);
+    }
+    document.addEventListener('animationstart', started, true);
+    document.addEventListener('visibilitychange', visibility);
+    return () => { observer.disconnect(); document.removeEventListener('animationstart', started, true); document.removeEventListener('visibilitychange', visibility); root.removeAttribute('data-tab-hidden'); document.querySelectorAll('[data-loop-offscreen]').forEach(el => el.removeAttribute('data-loop-offscreen')); };
+  }, []);
+  useEffect(() => {
     if (reduced) return;
     let frame = 0;
     let previousCard: HTMLElement | null = null;
@@ -259,6 +283,7 @@ export function AmbientBackground() {
   }, [reduced]);
   return (
     <div className="ambient" aria-hidden="true" ref={ref}>
+      <DecoImage name="dat-el-code" className="ambient-code" /><DecoImage name="dat-el-network" className="ambient-network" />
       <div className="aurora aurora-blue" />
       <div className="aurora aurora-red" />
       <div className="ambient-globe">

@@ -4,7 +4,8 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type 
 import { DatLogo } from './dat-logo';
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Info, Mail, Phone } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Info, Phone } from "lucide-react";
+import { DecoImage } from './deco-image';
 import { text, type Language } from "@/lib/frontend/i18n";
 import { getContactPosition } from "@/lib/frontend/contact-position";
 
@@ -118,10 +119,10 @@ export function ContactPopover({ language }: { language: Language }) {
         exit={{ opacity: 0, scale: reduced ? 1 : .96, y: reduced ? 0 : 4, transition: { duration: reduced ? 0 : .16 } }}
         transition={{ duration: reduced ? 0 : .24, ease: [.22, 1, .36, 1] }}>
         <div className="contact-popover-content" style={{ maxHeight: position ? position.maxHeight - 3 : undefined }}>
-          <div className="contact-heading"><DatLogo size={48} /><div className="contact-row-copy"><h2>DAiTech</h2><span>{t.clubFullName}</span></div></div>
+          <div className="contact-heading"><DatLogo size={40} /><div className="contact-row-copy"><h2>DAiTech</h2><span>{t.clubFullName}</span></div></div>
           <ContactRow index={0} icon={<FacebookGlyph />} title="Facebook" value={t.contactClubShort}
             href="https://www.facebook.com/profile.php?id=61591989592893" external label={t.openClubFacebook} />
-          <ContactRow index={1} icon={<Mail size={20} />} title="Email" value="daitechclub1@gmail.com" href="mailto:daitechclub1@gmail.com" />
+          <ContactRow index={1} icon={<DecoImage name="dat-el-mail-open" className="email-art" />} title="Email" value="daitechclub1@gmail.com" href="mailto:daitechclub1@gmail.com" />
           <div className="contact-row contact-hotline" style={{ "--row-delay": "80ms" } as CSSProperties}>
             <span className="contact-tile" aria-hidden="true"><Phone size={20} /></span>
             <span className="contact-row-copy">

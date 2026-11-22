@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, ArrowUpRight, FileText, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { RgbBorderComposer } from "./rgb-border-composer";
+import { DecoImage } from './deco-image';
 import { DatMask } from './dat-logo';
 import { ContactPopover } from "./contact-popover";
 export function Composer({
@@ -227,7 +228,7 @@ export function Composer({
               title={t.send}
               type="submit"
             >
-              <ArrowUp size={23} />
+              <ArrowUp size={23} /><DecoImage name="dat-el-cursor" className="send-cursor" />
             </button>
           )}
         </form>

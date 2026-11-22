@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ecosystem } from "@/lib/frontend/ecosystem";
 import { text, type Language } from "@/lib/frontend/i18n";
+import { DecoImage } from './deco-image';
 import { DatLogo } from './dat-logo';
 import { Modal } from "./primitives";
 
@@ -22,7 +23,7 @@ export function EcosystemMenu({ language, onClose }: { language: Language; onClo
     <Modal title={t.ecosystem} closeLabel={t.close} onClose={onClose} className="ecosystem-modal">
       {(close) => <>
         <div className="dat-lockup" role="img" aria-label="DAiTech × DAV"><DatLogo size={28} /><span aria-hidden="true">×</span><img src="/assets/img/dav-logo.png" width={28} height={28} alt="" /></div>
-        <h3 className="ecosystem-heading">{t.ecosystemIntro}</h3>
+        <div className="ecosystem-intro"><DecoImage name="dat-el-network" className="banner-network" /><h3 className="ecosystem-heading">{t.ecosystemIntro}</h3><DecoImage name="dat-el-globe" className="intro-globe" float /></div>
         <p className="muted">{t.ecosystemCopy}</p>
         <div className="ecosystem-grid">
           {ecosystem.map((item, index) => {
@@ -41,9 +42,10 @@ export function EcosystemMenu({ language, onClose }: { language: Language; onClo
               <motion.div
                 key={item.id}
                 className="ecosystem-card-reveal"
-                initial={reduced ? false : { opacity: 0, y: 20, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: reduced ? 0 : 0.44, delay: reduced ? 0 : 0.1 + index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                initial={reduced ? false : { opacity: 0, y: 14, filter: "blur(4px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true }}
+                transition={{ duration: reduced ? 0 : 0.42, delay: reduced ? 0 : 0.1 + index * 0.06, ease: [0.22, 1, 0.36, 1] }}
               >
                 {item.url ? (
                   <a

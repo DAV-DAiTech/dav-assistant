@@ -1,0 +1,112 @@
+{
+ "dat-bg-sun-dark.webp": {
+  "w": 1600,
+  "h": 1600,
+  "kb": 16.0
+ },
+ "dat-el-bamboo.webp": {
+  "w": 800,
+  "h": 1389,
+  "kb": 112.5
+ },
+ "dat-el-brain.webp": {
+  "w": 900,
+  "h": 798,
+  "kb": 44.2
+ },
+ "dat-el-building-right.webp": {
+  "w": 795,
+  "h": 1400,
+  "kb": 52.0
+ },
+ "dat-el-circuit-floor.webp": {
+  "w": 2400,
+  "h": 174,
+  "kb": 27.7
+ },
+ "dat-el-cloud-big.webp": {
+  "w": 1400,
+  "h": 817,
+  "kb": 78.5
+ },
+ "dat-el-cloud-bl.webp": {
+  "w": 1088,
+  "h": 698,
+  "kb": 12.8
+ },
+ "dat-el-cloud-br.webp": {
+  "w": 1356,
+  "h": 1105,
+  "kb": 20.1
+ },
+ "dat-el-code.webp": {
+  "w": 1100,
+  "h": 865,
+  "kb": 163.5
+ },
+ "dat-el-computer.webp": {
+  "w": 1100,
+  "h": 952,
+  "kb": 89.4
+ },
+ "dat-el-cursor.webp": {
+  "w": 420,
+  "h": 590,
+  "kb": 19.7
+ },
+ "dat-el-globe.webp": {
+  "w": 994,
+  "h": 1000,
+  "kb": 156.5
+ },
+ "dat-el-lac-drum.webp": {
+  "w": 1171,
+  "h": 1300,
+  "kb": 121.9
+ },
+ "dat-el-magnifier.webp": {
+  "w": 500,
+  "h": 533,
+  "kb": 20.9
+ },
+ "dat-el-mail-open.webp": {
+  "w": 700,
+  "h": 735,
+  "kb": 25.2
+ },
+ "dat-el-network.webp": {
+  "w": 900,
+  "h": 1185,
+  "kb": 109.5
+ },
+ "dat-el-podium-flat.webp": {
+  "w": 1008,
+  "h": 117,
+  "kb": 10.9
+ },
+ "dat-el-podium-rings.webp": {
+  "w": 1600,
+  "h": 753,
+  "kb": 51.5
+ },
+ "dat-el-question.webp": {
+  "w": 420,
+  "h": 649,
+  "kb": 22.9
+ },
+ "dat-el-ribbon-1.webp": {
+  "w": 1071,
+  "h": 448,
+  "kb": 11.4
+ },
+ "dat-el-ribbon-2.webp": {
+  "w": 950,
+  "h": 378,
+  "kb": 10.4
+ },
+ "dat-el-robot.webp": {
+  "w": 768,
+  "h": 800,
+  "kb": 42.0
+ }
+}
