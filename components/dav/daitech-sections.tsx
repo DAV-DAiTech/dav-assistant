@@ -2,7 +2,7 @@ import { ArrowUpRight, Mail, Facebook } from 'lucide-react';
 import { text, type Language } from '@/lib/frontend/i18n';
 import { datAssets, datLinks } from '@/lib/frontend/daitech';
 import { DecoImage } from './deco-image';
-import { DatLogo, DatMask } from './dat-logo';
+import { DatLogo } from './dat-logo';
 import { Reveal } from './primitives';
 
 export function AboutDaitech({ language, openEcosystem }: { language: Language; openEcosystem: () => void }) {
@@ -20,7 +20,7 @@ export function AboutDaitech({ language, openEcosystem }: { language: Language; 
 }
 export function FooterBrand({ language }: { language: Language }) {
   const t = text[language];
-  return <footer className="dat-footer"><div className="footer-credits"><DatMask watermark /><div className="dat-footer-row">
+  return <footer className="dat-footer"><div className="footer-fox" aria-hidden="true" /><div className="footer-credits"><div className="dat-footer-row">
     <div className="dat-credit"><DatLogo size={64} /><div><p className="dat-kicker">{t.datBuilt}</p><strong>{t.clubFullName}</strong></div></div>
     <div className="dat-social"><a href={datLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label={t.openClubFacebook}><Facebook size={19} /></a><a href={datLinks.email} aria-label="Email DAiTech"><Mail size={19} /></a></div>
   </div><p className="dat-copyright">{t.footer}</p></div>

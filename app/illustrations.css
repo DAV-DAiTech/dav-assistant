@@ -116,4 +116,41 @@ body {overflow-x:clip}
   .ecosystem-modal .modal-top {padding:16px 20px}
   .intro-globe {width:88px;height:88px}
 }
-.dat-footer {overflow:visible}.dat-footer .footer-credits {position:relative;overflow:hidden;isolation:isolate;padding-bottom:28px}
+.dat-footer {
+  --fox-fill:linear-gradient(135deg,rgba(204,89,57,.55),rgba(155,75,77,.45) 40%,rgba(74,96,145,.45));
+  --fox-opacity:.10;
+  --fox-blend:normal;
+  position:relative;z-index:0;overflow:visible clip;
+  margin-inline:calc(50% - 50vw);padding-inline:calc(50vw - 50%);
+}
+[data-theme=dark] .dat-footer {
+  --fox-fill:linear-gradient(135deg,rgba(236,151,93,.85),rgba(198,109,139,.7) 45%,rgba(136,133,186,.7));
+  --fox-opacity:.12;--fox-blend:screen;
+}
+.dat-footer .footer-credits {position:relative;z-index:1;padding-bottom:28px}
+.dat-footer .footer-scene {z-index:2}
+.footer-fox {
+  position:absolute;z-index:0;right:-7vw;bottom:-6%;width:clamp(420px,40vw,760px);aspect-ratio:1;
+  max-height:106%;pointer-events:none;user-select:none;
+  background:var(--fox-fill);background-size:200% 200%;mix-blend-mode:var(--fox-blend);
+  --fox-mask:url('/brand/dat/dat-mark-mono.svg'),radial-gradient(closest-side,#000 55%,transparent 100%);
+  -webkit-mask-image:var(--fox-mask);mask-image:var(--fox-mask);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  -webkit-mask-size:contain,100% 100%;mask-size:contain,100% 100%;
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+  transform:rotate(-6deg);filter:blur(.3px);opacity:var(--fox-opacity);
+  transition:opacity .4s var(--ease-out);
+}
+@supports not (mask-composite:intersect) {
+  @supports not (-webkit-mask-composite:source-in) {
+    .footer-fox {background:url('/brand/dat/dat-mark-mono.webp') center/contain no-repeat;mask-image:radial-gradient(closest-side,#000 55%,transparent)}
+  }
+}
+@media(768px <= width < 1280px){.footer-fox {width:clamp(320px,50vw,520px);right:-12vw}}
+@media(width < 768px){.footer-fox {width:70vw;right:-20vw}.dat-footer {--fox-opacity:.08}[data-theme=dark] .dat-footer {--fox-opacity:.10}}
+@keyframes footer-fox-shimmer {50%{background-position:100% 100%}}
+@keyframes footer-fox-float {50%{transform:translateY(-10px) rotate(-6deg)}}
+@media(prefers-reduced-motion:no-preference){.footer-fox {animation:footer-fox-shimmer 18s ease-in-out infinite,footer-fox-float 9s ease-in-out infinite}}
+@media(prefers-reduced-motion:reduce){.footer-fox {transition:none}}
+html[data-deco=off] .footer-fox {display:none}
