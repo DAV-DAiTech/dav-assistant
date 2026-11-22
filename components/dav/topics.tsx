@@ -1,11 +1,11 @@
 "use client";
+import { DecoImage } from './deco-image';
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
 } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { text, type Language } from "@/lib/frontend/i18n";
@@ -228,9 +228,8 @@ export function TopicSuggestions({
 
   return (
     <section id="topics" className="topics-section" aria-label={t.topics}>
-      <div className="section-kicker">
+      <div className="section-kicker"><DecoImage name="dat-el-question" className="question-art" float />
         <span>
-          <Sparkles className="tiny-spark" size={14} />
           {t.popular}
         </span>
         <span className="suggestion-hint">{t.suggestionHint}</span>

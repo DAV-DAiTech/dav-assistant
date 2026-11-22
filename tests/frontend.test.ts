@@ -35,7 +35,7 @@ test("contact panel has three rows and two independent hotline links", () => {
   assert.equal((panel.match(/className="contact-row contact-hotline"/g) ?? []).length, 1);
   for (const phone of ["0943482840", "0936018433"])
     assert.equal((panel.match(new RegExp(`href="tel:${phone}"`, "g")) ?? []).length, 1);
-  assert.doesNotMatch(panel, /ShieldCheck|Users|personalInformation|t\.privacy|t\.clubFullName|<hr|contact-popover-scroll/);
+  assert.doesNotMatch(panel, /ShieldCheck|Users|personalInformation|t\.privacy|<ContactRow[^>]*clubFullName|<hr|contact-popover-scroll/);
   for (const language of ["vi", "en"] as const) {
     assert.equal("personalInformation" in text[language], false);
     assert.equal("privacy" in text[language], false);

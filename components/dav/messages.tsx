@@ -13,7 +13,8 @@ import {
 } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import type { ChatMessage } from "@/lib/frontend/adapters";
-import { Logo, Reveal } from "./primitives";
+import { DecoImage } from './deco-image';
+import { Reveal } from "./primitives";
 export function Messages({
   messages,
   language,
@@ -59,7 +60,7 @@ export function Messages({
         {messages.map((m, i) => (
           <Reveal key={m.id} className={`message-row ${m.role}`}>
             <div className="message-avatar">
-              {m.role === "assistant" ? <Logo /> : <span>{t.you}</span>}
+              {m.role === "assistant" ? <DecoImage name="dat-el-robot" className="assistant-robot" /> : <span>{t.you}</span>}
             </div>
             <div className="message-body">
               <span className="message-author">

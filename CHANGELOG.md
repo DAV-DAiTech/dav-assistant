@@ -1,5 +1,10 @@
 # Changelog
 
+## DAiTech developer attribution — 2026-11-20
+
+- Installed all 17 original files under `public/brand/dat/`. Added the responsive About card, footer credit and watermark, ecosystem lockup, contact heading, disclaimer mark and More-menu shortcut. DAV primary branding and chat behavior are unchanged.
+- Files: `app/{layout.tsx,daitech.css}`, `components/dav/{dat-logo,daitech-sections,welcome,header,ecosystem-menu,composer,contact-popover}.tsx`, `lib/frontend/{daitech,i18n}.ts`, `tests/frontend.test.ts`, `CHANGELOG.md`.
+
 ## Composer focus and compact contacts — 2026-11-15
 
 - `app/composer.css`: removed the inner textarea focus rectangle; inner form/input surfaces stay transparent and frameless. Outer RGB styling, animation and implementation are unchanged. Contact rows have 12px gaps, auto-fit content and individually focusable hotline links.

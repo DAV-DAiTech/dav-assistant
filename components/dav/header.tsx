@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { Logo, Modal } from "./primitives";
+import { DatMask } from './dat-logo';
 import { ScrollProgress } from "./scroll-progress";
 export type Theme = "light" | "dark" | "system";
 type Props = {
@@ -242,6 +243,15 @@ export function Header(p: Props) {
               {t.site}
               <ArrowUpRight size={16} />
             </a>
+            <button onClick={() => {
+              setMenu(false);
+              requestAnimationFrame(() => {
+                const card = document.getElementById('about-daitech');
+                card?.focus({ preventScroll: true });
+                card?.scrollIntoView({ behavior: reduced ? 'instant' : 'smooth', block: 'start' });
+                if (!reduced) card?.animate([{ boxShadow: '0 0 0 0 transparent' }, { boxShadow: '0 0 0 4px var(--dat-lavender-400)' }, { boxShadow: '0 0 0 0 transparent' }], { duration: 700 });
+              });
+            }}><DatMask />{t.datAbout}</button>
             <button onClick={openQr}>
               <QrCode size={19} />
               {t.qr}

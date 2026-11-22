@@ -45,6 +45,8 @@ export const text = {
     disclaimer:
       "DAV Assistant do CLB DAiTech phát triển. Câu trả lời có thể chưa đầy đủ, vui lòng đối chiếu tại",
     details: "Chi tiết",
+    datBuilt: "Phát triển bởi", datAbout: "Về DAiTech", datArt: "Nhận diện CLB DAiTech", datEcosystem: "Hệ sinh thái DAV",
+    datHeadline: "Cộng đồng AI & Công nghệ của Học viện Ngoại giao.", datBody: "Chúng mình xây dựng các sản phẩm số cho cộng đồng DAV.",
   contactClub: "Liên hệ CLB DAiTech",
   contactClubShort: "CLB DAiTech",
   openClubFacebook: "Mở Facebook CLB DAiTech trong tab mới",
@@ -153,6 +155,8 @@ export const text = {
     disclaimer:
       "DAV Assistant is built by DAiTech Club. Answers may be incomplete; please verify at",
     details: "Details",
+    datBuilt: "Built by", datAbout: "About DAiTech", datArt: "DAiTech club identity", datEcosystem: "DAV Ecosystem",
+    datHeadline: "The AI & Technology community of the Diplomatic Academy.", datBody: "We build digital products for the DAV community.",
   contactClub: "Contact DAiTech Club",
   contactClubShort: "DAiTech Club",
   openClubFacebook: "Open DAiTech Club Facebook in a new tab",
