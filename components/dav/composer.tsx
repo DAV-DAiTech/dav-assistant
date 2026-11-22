@@ -210,6 +210,7 @@ export function Composer({
           >
             <Mic size={20} />
           </button>
+          {!streaming && <DecoImage name="dat-el-cursor" className="send-cursor" />}
           {streaming ? (
             <button
               type="button"
@@ -228,7 +229,7 @@ export function Composer({
               title={t.send}
               type="submit"
             >
-              <ArrowUp size={23} /><DecoImage name="dat-el-cursor" className="send-cursor" />
+              <ArrowUp size={23} />
             </button>
           )}
         </form>

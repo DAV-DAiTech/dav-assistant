@@ -22,9 +22,12 @@ export function EcosystemMenu({ language, onClose }: { language: Language; onClo
   return (
     <Modal title={t.ecosystem} closeLabel={t.close} onClose={onClose} className="ecosystem-modal">
       {(close) => <>
+        <div className="ecosystem-top-zone">
+        <DecoImage name="dat-el-network" className="modal-network" />
         <div className="dat-lockup" role="img" aria-label="DAiTech × DAV"><DatLogo size={28} /><span aria-hidden="true">×</span><img src="/assets/img/dav-logo.png" width={28} height={28} alt="" /></div>
-        <div className="ecosystem-intro"><DecoImage name="dat-el-network" className="banner-network" /><h3 className="ecosystem-heading">{t.ecosystemIntro}</h3><DecoImage name="dat-el-globe" className="intro-globe" float /></div>
+        <div className="ecosystem-intro"><h3 className="ecosystem-heading">{t.ecosystemIntro}</h3><DecoImage name="dat-el-globe" className="intro-globe" float /></div>
         <p className="muted">{t.ecosystemCopy}</p>
+        </div>
         <div className="ecosystem-grid">
           {ecosystem.map((item, index) => {
             const content = <>

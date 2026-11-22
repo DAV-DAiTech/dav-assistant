@@ -20,8 +20,14 @@ export function AboutDaitech({ language, openEcosystem }: { language: Language; 
 }
 export function FooterBrand({ language }: { language: Language }) {
   const t = text[language];
-  return <footer className="dat-footer"><DatMask watermark /><DecoImage name="dat-el-circuit-floor" className="footer-floor" /><DecoImage name="dat-el-cloud-big" className="footer-cloud" /><DecoImage name="dat-el-bamboo" className="footer-bamboo" /><DecoImage name="dat-el-lac-drum" className="footer-drum" float /><div className="dat-footer-row">
+  return <footer className="dat-footer"><div className="footer-credits"><DatMask watermark /><div className="dat-footer-row">
     <div className="dat-credit"><DatLogo size={64} /><div><p className="dat-kicker">{t.datBuilt}</p><strong>{t.clubFullName}</strong></div></div>
     <div className="dat-social"><a href={datLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label={t.openClubFacebook}><Facebook size={19} /></a><a href={datLinks.email} aria-label="Email DAiTech"><Mail size={19} /></a></div>
-  </div><p className="dat-copyright">{t.footer}</p></footer>;
+  </div><p className="dat-copyright">{t.footer}</p></div>
+    <div className="footer-scene" aria-hidden="true">
+      <DecoImage name="dat-el-circuit-floor" className="footer-floor" />
+      <DecoImage name="dat-el-bamboo" className="footer-bamboo" float />
+      <DecoImage name="dat-el-lac-drum" className="footer-drum" float />
+    </div>
+  </footer>;
 }

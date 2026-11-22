@@ -33,8 +33,7 @@ export function HeroArt() {
     return () => { observer.disconnect(); cancelAnimationFrame(frame); window.removeEventListener('scroll', scroll); };
   }, []);
   return <div ref={ref} className="hero-art" aria-hidden="true">
-    <DecoImage name="dat-bg-sun-dark" className="sun" />
-    <DecoImage name="dat-el-ribbon-1" className="ribbon left" /><DecoImage name="dat-el-ribbon-2" className="ribbon right" />
+    <DecoImage name="dat-el-ribbon-1" className="ribbon left" /><DecoImage name="dat-el-ribbon-1" className="ribbon right" />
     <DecoImage name="dat-el-cloud-bl" className="cloud left" /><DecoImage name="dat-el-cloud-br" className="cloud right" />
     <DecoImage name="dat-el-podium-flat" className="robot-ground" /><DecoImage name="dat-el-robot" className="hero-robot" float priority />
   </div>;

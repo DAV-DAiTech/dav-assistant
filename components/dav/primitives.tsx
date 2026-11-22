@@ -283,6 +283,7 @@ export function AmbientBackground() {
   }, [reduced]);
   return (
     <div className="ambient" aria-hidden="true" ref={ref}>
+      <div className="ambient-atmosphere" /><div className="ambient-sun" />
       <DecoImage name="dat-el-code" className="ambient-code" /><DecoImage name="dat-el-network" className="ambient-network" />
       <div className="aurora aurora-blue" />
       <div className="aurora aurora-red" />
