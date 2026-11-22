@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, ArrowUpRight, FileText, Mic, Plus, Square, X } from "lucide-react";
 import { text, type Language } from "@/lib/frontend/i18n";
 import { RgbBorderComposer } from "./rgb-border-composer";
+import { DatMask } from './dat-logo';
 import { ContactPopover } from "./contact-popover";
 export function Composer({
   language,
@@ -240,7 +241,7 @@ export function Composer({
       </div>
       <div className="disclaimer">
         <span>
-          {t.disclaimer}{" "}
+          {t.disclaimer.slice(0, t.disclaimer.indexOf(t.contactClubShort))}<DatMask />{t.disclaimer.slice(t.disclaimer.indexOf(t.contactClubShort))}{" "}
           <a href="https://dav.edu.vn" target="_blank" rel="noopener noreferrer">
             dav.edu.vn<ArrowUpRight size={13} aria-hidden="true" />
           </a>.

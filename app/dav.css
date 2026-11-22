@@ -126,9 +126,9 @@ svg {
 .skip-link:focus {
   top: 10px;
 }
+body { overflow-x: clip; }
 .dav-app {
   isolation: isolate;
-  overflow-x: clip;
 }
 .muted {
   color: var(--muted);
